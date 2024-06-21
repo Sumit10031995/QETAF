@@ -1,0 +1,79 @@
+tools:
+  maven: 3.6.0
+  jdk:
+    flavor: azul
+    version: 11
+
+parameters:
+  - tag: { type: string }
+  - testrunid: { type: string }
+  - reportPath: {type:  string }
+
+envs:
+  global:
+    variables:
+      reportUrl: "---URL---"
+      buildUrl: "---URL---"
+      REPOSITORY_URL: "---URL---"
+      ALLOW_ARTIFACTORY: true
+      appName: "APP_NAME"
+      DEFAULT_TAG: 'DEFAULT_TAG'
+      testEnvironment: "${TestEnvironment}"
+      buildLink: ${buildUrl}/${BUILD_NUMBER}
+      extentReportLink: ${reportUrl}/${JOB_NAME}/${BUILD_NUMBER}/${reportPath}
+      branchName: $TRIGGER_BRANCH
+      tagName: ${tag}
+
+triggers:
+  push:
+    disabled: true
+  manual:
+    name: Run API Tests
+    call: default
+  cron:  30 18 * * * #every day 7:30 AM IST
+
+flows:
+  default:
+     - call: multiFlows
+
+  Testone:
+    - var(tag = 'Testone')
+    - call: multiFlows
+
+  TestTwo:
+    - var(tag = 'TestTwo')
+    - call: multiFlows
+   
+
+  multiFlows:
+    - call: versionOfTools
+    - if: $testrunid
+      then:
+        - shell: echo "Job Triggered with RUN ID " $testrunid
+      else:
+        - var(testrunid): date '+%Y-%m-%d_%H-%M-%S-%3N'
+        - shell: echo "Job Triggered with RUN ID " $testrunid
+    - if: $tag
+      then:
+        - shell: echo "Job Triggered with Tag " $tag
+        - var(reportPath = 'testResult/Test_Results_$tag.html')
+      else:
+        - var(tag = $DEFAULT_TAG)
+        - shell: echo "Job Triggered with Default Tag " $tag
+        - var(reportPath = 'testResult/Test_Results_$tag.html')
+    - mvn clean
+    - mvn -f ./pom.xml test -Dislocalrun="false" -Dsurefire.suiteXmlFiles="./${tag}_TestNG.xml" -DrunId=$testrunid
+    - call: publishReport
+
+  versionOfTools:
+    - echo "Versions of tools.."
+    - (name JDK version) java -version
+    - (name Maven version) mvn -v
+
+  publishReport:
+    - publishReport:
+        context: testResult
+        dir: /test-report
+        index: Test_Results_${tag}.html
+        verbose: true
+

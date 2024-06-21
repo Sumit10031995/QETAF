@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="TestNG.xml" parallel="methods" thread-count="10" configfailurepolicy="continue">
+
+	<parameter name="Env_Name" value="stage"/>
+    <parameter name="API_TIMEOUT_MS" value="180000"/>
+    <parameter name="RETRY_FAILED_TESTS" value="false"/>
+    <parameter name="MAX_RETRY_COUNT" value="1"/>
+    <parameter name="REPORT_RETRY_TESTS" value="false"/> 
+    <parameter name="TRIGGER_MAIL" value="true"/>
+    <parameter name="DEEP_REPORTING" value="false"/>
+    
+    <listeners>
+		<listener class-name="com.walmart.rtaf.retry.RetryListener" />  
+	</listeners>
+	
+   <test name="Tests" >
+   <groups>
+	<run>
+		<include name="P1"></include>
+		<include name="P2"></include>
+		<include name="P3"></include>
+		<exclude name="WIP"></exclude>
+	</run>
+   </groups>
+   <packages>
+        <package name="com.qe.*"></package>
+   </packages>
+    </test>
+</suite>

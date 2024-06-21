@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Custom Report</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        .header p {
+            margin: 0;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        .TableStyle {
+            background-color: white;
+            border-collapse: collapse;
+            border: 2px solid grey;
+            font-size: 14px;
+            width: 100%;
+            table-layout: auto; /* Adjust table layout */
+        }
+        .TableStyle th {
+            padding: 10px;
+            border: 2px solid grey;
+            text-align: left;
+        }
+        .TableStyle td,
+        .TableStyle th {
+            padding: 5px;
+            border: px solid grey;
+            text-align: left;
+        }
+        .TableStyle td {
+            border-bottom: 2px solid grey;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            margin-right: 10px;
+        }
+        /* Header color styles */
+        .total-executed {
+            background-color: #808080; /* gray */
+            color: white;
+        }
+        .passed {
+            background-color: #056608; /* green */
+            color: white;
+        }
+        .failed {
+            background-color: #ff0000; /* red */
+            color: white;
+        }
+        .skipped {
+            background-color: #ffff00; /* yellow */
+            color: black;
+        }
+        .passPercentage {
+            background-color: #FFA500; /* orange */
+            color: black;
+        }
+        .failed-tests th,
+        .build-details th {
+            background-color: #2a2d40; /* dark blue */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+           <br> <p>Hi Team,</p></br>
+           <br> <p id="Service">Automation test script run for suite <strong>TestSuite</strong> is completed.</p> </br>
+
+ <div class="build-details">
+            <table class="TableStyle" border="2">
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Test Suite</td>
+                    <td>TestSuite</td>
+                </tr>
+                 <tr>
+                    <td>Overall Execution Status</td>
+                    <td id="executionStatus">ExecutionStatus</td>
+                </tr>
+                <tr>
+                    <td>Pass Percentage</td>
+                    <td>xPassPercentage</td>
+                </tr>
+                 <tr>
+                    <td>Extent Report Link</td>
+                    <td><a href="ExtentReportLink">click to open Extent Report	</a></td>
+                </tr>
+                <tr>
+                    <td>Environment Name</td>
+                    <td>EnvironmentName</td>
+                </tr>
+                <tr>
+                    <td>Test Repository</td>
+                    <td><a href="TestRepository">TestRepository(Branch:BranchName)</a></td>
+                </tr>
+                <tr>
+                    <td>Looper Build Link</td>
+                    <td><a href="LooperBuildURLLink">LooperBuildURLLink</a></td>
+                </tr>
+                <tr>
+                    <td>Testbrust Link</td>
+                    <td><a href="TestbrustLink">TestbrustLink</a></td>
+                </tr>
+            </table>
+        </div>
+        </div>
+        <div class="table-container">
+            <table class="TableStyle" border="2">
+                <tr>
+                    <th class="total-executed" style="width:25%;">TotalTestExecuted</th>
+                    <th class="passed" style="width:25%;">Passed</th>
+                    <th class="failed" style="width:25%;">Failed</th>
+                    <th class="skipped" style="width:25%;">Skipped</th>
+                </tr>
+                <tr>
+                    <td>xTotalTestExecuted</td>
+                    <td>xPassed</td>
+                    <td>xFailed</td>
+                    <td>xSkipped</td>
+                </tr>
+            </table>
+        </div>
+       
+        <div class="failed-tests">
+            <p><strong>Failed Tests:</strong></p>
+            <table class="TableStyle" border="2">
+                <tr>
+                    <th style="width:6%;">Sl No</th>
+                    <th style="width:21.33%;">Test Name</th>
+                    <th style="width:21.33%;">Test Class</th>
+                    <th style="width:21.33%;">Jira ID</th>
+                </tr>
+                <tbody>
+                </tbody>
+            </table>
+            <p>Please refer attached report for more details.</p>
+        </div>
+        <p>Thank you,<br>CP QE Team</p>
+    </div>
+</body>
+</html>

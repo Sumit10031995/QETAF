@@ -99,8 +99,6 @@ public class Configurator {
 	/**
 	 * This function should be called at the beginning of the session execution to
 	 * set some optional parameters
-	 *
-	 * @author a0b0lgm
 	 * @param params : Map
 	 */
 	private void setOptionalParameter(Map<String, String> params) {
@@ -122,11 +120,6 @@ public class Configurator {
 		parameterMap.put(ContextConstant.API_TIMEOUT_MS,
 				params.containsKey(ContextConstant.API_TIMEOUT_MS) ? params.get(ContextConstant.API_TIMEOUT_MS)
 						: "180000");
-		// add xl report
-		parameterMap.put(ContextConstant.CREATE_FAILURE_XLREPORT,
-				params.containsKey(ContextConstant.CREATE_FAILURE_XLREPORT) ? params.get(ContextConstant.CREATE_FAILURE_XLREPORT)
-						: "false");
-
 		if(params.containsKey(ContextConstant.MAX_RETRY_COUNT) && params.containsKey(ContextConstant.RETRY_FAILED_TESTS)) {
 			// set is retry field
 			parameterMap.put(ContextConstant.MAX_RETRY_COUNT,retryInputAnalyser(params.get(ContextConstant.MAX_RETRY_COUNT)));
@@ -136,7 +129,6 @@ public class Configurator {
 			parameterMap.put(ContextConstant.MAX_RETRY_COUNT,"0");
 			parameterMap.put(ContextConstant.RETRY_FAILED_TESTS, "false");
 		}
-		
 		// log REPORT_RETRY_TESTS tests to extent report
 			parameterMap.put(ContextConstant.REPORT_RETRY_TESTS,
 						params.containsKey(ContextConstant.REPORT_RETRY_TESTS) ? params.get(ContextConstant.REPORT_RETRY_TESTS)
@@ -145,7 +137,6 @@ public class Configurator {
 			parameterMap.put(ContextConstant.JIRA_COMPONENTS,
 						params.containsKey(ContextConstant.JIRA_COMPONENTS) ? params.get(ContextConstant.JIRA_COMPONENTS)
 											: "WMUS CP 1,WMUS CP 2");	
-			
 		// trigger mail
 			parameterMap.put(ContextConstant.TRIGGER_MAIL,
 						params.containsKey(ContextConstant.TRIGGER_MAIL) ? params.get(ContextConstant.TRIGGER_MAIL)
@@ -156,7 +147,6 @@ public class Configurator {
 				(mailIDs!=null)? 
 						(mailIDs.replaceAll("\\s", "").equals("") ? null : mailIDs)
 						: null);
-			
 			
 		// Add rest of the custom parameters in map
 		for (Entry<String, String> e : params.entrySet()) {

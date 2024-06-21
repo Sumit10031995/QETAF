@@ -105,7 +105,7 @@ public class EmailUtil {
 	 */
 	private String fetchJiraID(String input) {
 		int index = input.indexOf("::");
-		XrayUtil xray=new XrayUtil();
+		JavaUtils xray=new JavaUtils();
 		if (index != -1) {
 			String firstPart = input.substring(0, index);
 			String secondPart = input.substring(index + 2, input.length());

@@ -55,5 +55,21 @@ public class JavaUtils {
 	    int dayNumber = (dayOfWeek.getValue() + 6) % 7;
 	    return dayNumber;
 	}
+	
+	/**
+	 * Fetch the Jira Key as Hyperlink
+	 * 
+	 * 
+	 * @param jiraKey
+	 * @return JiraKey as HyperLink
+	 */
+	  public static String getJiraKeyasLink(String jiraKey) {
+	  	if(jiraKey.isEmpty() || jiraKey == null) {
+	  		return null;
+	  	}else {
+	  		return "<a href = 'https://jira.walmart.com/browse/"+jiraKey+"'>"+jiraKey+"</a>";	
+	  	}
+	
+	  }
 
 }

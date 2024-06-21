@@ -17,9 +17,9 @@ import org.testng.annotations.Listeners;
 import com.qe.commoncore.annotations.Jira;
 import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
+import com.qe.commoncore.utils.JavaUtils;
 import com.qe.commoncore.utils.ReportingUtil;
 import com.qe.commoncore.utils.TestDataUtil;
-import com.qe.commoncore.utils.XrayUtil;
 import com.qe.retry.Retry;
 import com.qe.retry.RetryListener;
 
@@ -59,11 +59,11 @@ public class BaseTest {
 
 	}
 
-	   /**
+	/**
      * BeforeMethod runs before every test execution. 
-     * It adds a new test in the extent report before each test method
+     * It adds a new test in the extent report 
      * @throws Exception  
-     * @BeforeMethod annotated methods. TestNG can inject only one of <ITestContext, XmlTest, Method, Object[], ITestResult>
+     * @BeforeMethod annotated methods. TestNG can inject only one of <ITestResult ,ITestContext, XmlTest, Method, Object[], ITestResult>
      */
     @BeforeMethod(alwaysRun = true)
     public static void beforeMethod(ITestResult testResult, Object[] testDataRow) throws Exception
@@ -82,7 +82,6 @@ public class BaseTest {
      */
 	public static void fetchJiraDetailsAndAddToReport(ITestResult testResult) throws Exception {
 		// Start Extent Test
-		// reporter.startTest(m.getName(), "ToDO: will come from JIRA");
 		Class classDetails = testResult.getMethod().getRealClass();
 		String method = testResult.getMethod().getMethodName();
 		String methodName=getMethodName(classDetails.toString(),method);
@@ -93,7 +92,7 @@ public class BaseTest {
 			if (Objects.nonNull(jiraDetails.jiraTestKey())
 					&& !EMPTY_STRING.equalsIgnoreCase(jiraDetails.jiraTestKey())) {
 				ReportingUtil.methodVsTest.put(testMethodIdentifier.get(),reporter.startTest(methodName, classDetails.getCanonicalName() + " :: "
-						+ XrayUtil.getJiraKeyasLink(jiraDetails.jiraTestKey())));
+						+ JavaUtils.getJiraKeyasLink(jiraDetails.jiraTestKey())));
 			} else if (Objects.nonNull(jiraDetails.csvTestKey())
 					&& !EMPTY_STRING.equalsIgnoreCase(jiraDetails.csvTestKey())) {
 				ReportingUtil.methodVsTest.put(testMethodIdentifier.get(),reporter.startTest(methodName, classDetails.getCanonicalName() + " :: " + jiraDetails.csvTestKey()));
@@ -102,10 +101,9 @@ public class BaseTest {
 			ReportingUtil.methodVsTest.put(testMethodIdentifier.get(),reporter.startTest(methodName, classDetails.getCanonicalName()));
 		}
 	}
+	
 	/**
-	 * AfterMethod runs after every test execution. This is responsible for getting
-	 * Jira id from annotation data and setting it in local thread object.
-	 *
+	 * AfterMethod runs after every test execution. T
 	 * @param testResult ITestResult is the result object provided by testng.
 	 * @throws Exception
 	 */
@@ -122,9 +120,7 @@ public class BaseTest {
 	}
 
 	/**
-	 * AfterSuite runs after all the test executions. This method is responsible for
-	 * sanitising test result data and making Xray API for updating test status in
-	 * JIRA.
+	 * AfterSuite runs after all the test executions.
 	 *
 	 * @param context ITestContext is test result data provided by testng.
 	 */

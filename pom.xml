@@ -1,154 +1,138 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>APIFramework</groupId>
-  <artifactId>APIFramework</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
-  <name>APIFramework</name>
-  
-  <properties>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>APIFramework</groupId>
+	<artifactId>APIFramework</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<!--This tags are use to generate jar file after build process-->
+	<packaging>jar</packaging>
+	<name>APIFramework</name>
+
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
-		<finalName>QEAF</finalName>
+		<!--This plugin is used to compile the Java source code of the project.(Maven was used for project build and dependency management)-->
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<!-- get all project dependencies -->
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<!-- bind to the packaging phase -->
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
+					<!--These tags specify the Java version to be used for compiling the source code-->
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+
+			<!-- This plugin is used to run unit tests during the test phase of the build lifecycle using testing frameworks like JUnit or TestNG.-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<configuration>
+				<!--don't skip any test-->'
+					<skipTests>false</skipTests>
+					<!--build will not fail if there are test failures-->'
+					<testFailureIgnore>true</testFailureIgnore>
+					<suiteXmlFiles>
+						<suiteXmlFile>Test_bvt_testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
+
+		<!-- use to do API automation-->
 		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>5.0.0</version>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>4.2.0</version>
 		</dependency>
+
+		<!-- use to do UI automation-->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>4.12.1</version>
+		</dependency>
+
+		<!--used TestNG as the test framework due to its advanced features like parallel test execution, data-driven testing, and detailed reports-->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<version>7.1.0</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<!-- use to Generate test report.ExtentReports in a test automation framework provides several benefits, including detailed and visually appealing reports, enhanced logging capabilities...-->
 		<dependency>
 			<groupId>com.aventstack</groupId>
 			<artifactId>extentreports</artifactId>
 			<version>5.0.5</version>
 		</dependency>
+
+		<!-- use to read and write data from .XLS file-->
 		<dependency>
-			<groupId>com.aventstack</groupId>
-			<artifactId>extentreports-testng-adapter</artifactId>
-			<version>1.2.2</version>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>4.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20211205</version>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>4.12.1</version>
-		</dependency>
+
+		<!-- use to read and write data from .csv file-->
 		<dependency>
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>5.7.1</version>
 		</dependency>
+
+		<!-- use to convert a json string to JSONObject or JSONArray-->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20211205</version>
+		</dependency>
+
+		<!-- use to get and set values using annotations-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.22</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-csv</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy</artifactId>
-			<version>3.0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>json-schema-validator</artifactId>
-			<version>5.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.14.0</version>
-		</dependency>
+
+		<!-- use to retry a specific peace of code-->
 		<dependency>
 			<groupId>net.jodah</groupId>
 			<artifactId>failsafe</artifactId>
 			<version>2.4.4</version>
 		</dependency>
+
+		<!-- use to JSON processing and Serialization-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.14.1</version>
+		</dependency>
+		
+		<!-- use to format csv data-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-csv</artifactId>
+			<version>2.14.1</version>
+		</dependency>
+
+		<!-- use to send mail-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
 			<version>1.5</version>
 		</dependency>
+		
+		<!-- use to HTML Parsing,DOM Traversal and Manipulation,Element Manipulation,HTML Extraction...-->
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.10.2</version>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<repository>
-			<id>af-release</id>
-			<url>${env.REPOSOLNS_MVN_REPO}</url>
-		</repository>
-		<snapshotRepository>
-			<id>af-snapshot</id>
-			<url>${env.REPOSOLNS_MVN_REPO}</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
