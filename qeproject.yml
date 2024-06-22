@@ -1,6 +1,11 @@
 pipeline {
   agent any
-
+  
+  tools {
+    maven 'Maven 3.6.0'
+    jdk 'Azul JDK 11'
+  }
+  
   environment {
     REPORT_URL = "---URL---"
     BUILD_URL = "http://localhost:8080/job/APIAutomation/"
