@@ -1,35 +1,21 @@
 pipeline {
   agent any
 
-  tools {
-    // Define Maven and JDK tools
-    maven '3.6.0'
-    jdk 'Azul JDK 11'
-  }
-
-  parameters {
-    // Define pipeline parameters
-    string(name: 'tag', defaultValue: '', description: 'Specify the tag for the job')
-    string(name: 'testrunid', defaultValue: '', description: 'Specify the test run ID (optional)')
-    string(name: 'reportPath', defaultValue: '', description: 'Specify the path for test report')
-  }
-
   environment {
-    // Define environment variables
     REPORT_URL = "---URL---"
     BUILD_URL = "http://localhost:8080/job/APIAutomation/"
     REPOSITORY_URL = "https://github.com/Sumit10031995/APIFramework.git"
     APP_NAME = "QE_FRAMEWORK"
     DEFAULT_TAG = 'APITesting'
-    TEST_ENVIRONMENT = "${TestEnvironment}"
-    BUILD_LINK = "${BUILD_URL}/${BUILD_NUMBER}"
-    EXTENT_REPORT_LINK = "${REPORT_URL}/${JOB_NAME}/${BUILD_NUMBER}/${env.reportPath}"
-    BRANCH_NAME = "${TRIGGER_BRANCH}"
-    TAG_NAME = "${params.tag}"
+  }
+
+  parameters {
+    string(name: 'tag', defaultValue: '', description: 'Specify the tag for the job')
+    string(name: 'testrunid', defaultValue: '', description: 'Specify the test run ID (optional)')
+    string(name: 'reportPath', defaultValue: '', description: 'Specify the path for test report')
   }
 
   triggers {
-    // Define triggers for the pipeline
     cron('30 18 * * *')  // Run daily at 7:30 AM IST
   }
 
