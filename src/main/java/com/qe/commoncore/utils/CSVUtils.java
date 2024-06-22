@@ -1,39 +1,17 @@
 package com.qe.commoncore.utils;
 
-import com.aventstack.extentreports.Status;
-import com.fasterxml.jackson.databind.MappingIterator;
-
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
-import com.opencsv.exceptions.CsvException;
-import com.qe.commoncore.BaseTest;
-
-import org.apache.commons.lang3.StringUtils;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class TestDataUtil {
-	
-	// To store the column header list from the test data CSV file (used only when using data provider).
-	public static ThreadLocal<List<String>> testDataHeader = new ThreadLocal<List<String>>();
-	
-	// To store the list of map where each map is like headerColumn=rowValue (used only when using data provider).
-	public static ThreadLocal<Map<String, String>> testDataMapWithHeaders = new ThreadLocal<Map<String, String>>();
-	
-	// used to store the scenario. Scenario is fetched from scenario column from the 'testDataMapWithHeaders' map.
-    	public static final String scenarioClmName="scenario";
 
-    private TestDataUtil() {
-    }
+import com.opencsv.CSVReader;
 
+public class CSVUtils {
 
 	/**
 	 * @param filePath
@@ -56,7 +34,6 @@ public class TestDataUtil {
 			if (readAllRows.size() == 0) {
 				throw new Exception("Please add column details to the .CSV file");
 			}
-			testDataHeader.set(Arrays.asList(readAllRows.get(0)));
 
 			for (String[] row : readAllRows) {
 				Map<String, String> mapObject = new LinkedHashMap();
@@ -84,7 +61,6 @@ public class TestDataUtil {
 			String[] headings = csvReader.readNext();
 			for(int i=0;i<headings.length;i++) {
 				headings[i]=headings[i].toLowerCase();
-				testDataHeader.set(Arrays.asList(headings));
 			}
 			
 			if (headings.length == 0) {
@@ -171,7 +147,6 @@ public class TestDataUtil {
 			if (readAllRows.size() == 0) {
 				throw new Exception("Missing data in the .CSV file");
 			}
-			testDataHeader.set(Arrays.asList(readAllRows.get(0)));
 
 			objectArray = new String[readAllRows.size()][readAllRows.get(0).length];
 
@@ -199,7 +174,6 @@ public class TestDataUtil {
 			String[] headings = csvReader.readNext();
 			for(int i=0;i<headings.length;i++) {
 				headings[i]=headings[i].toLowerCase();
-				testDataHeader.set(Arrays.asList(headings));
 			}
 			
 			if (headings.length == 0) {
@@ -236,33 +210,5 @@ public class TestDataUtil {
 			}
 		}
 		return objectArray;
-	}
-    
-	/**
-	 * @param array
-	 * This method is use to create a mapping between test data headers and values when data provider is used.
-	 * @throws Exception 
-	 */
-	public static void setTestDataMapWithHeaders(Object[] testDataRow) throws Exception {
-		
-		//If data provider is not being used 
-    	if(testDataRow.length==0) {
-			return ;
-		}
-		
-		//In-case data provider is used but not constructed using CSV file then testDataHeader list will be null.
-		if(testDataHeader.get()==null) {
-			return;
-		}
-		
-		Map<String, String> map = new HashMap<>();
-		if (testDataRow.length == testDataHeader.get().size()) {
-			for (int i = 0; i < testDataRow.length; i++) {
-				map.put(testDataHeader.get().get(i), testDataRow[i].toString());
-			}
-		}else {
-            System.out.println("The header element count and data provider element count fetched from the CSV file should match. Both should contain the same number of elements");
-		}
-		testDataMapWithHeaders.set(map);
 	}
 }

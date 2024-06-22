@@ -109,14 +109,14 @@ public class BaseTest {
 	 */
 	@AfterMethod(alwaysRun = true)
 	public static void afterMethod(ITestResult testResult) throws Exception {
-//        Class classDetails = testResult.getMethod().getRealClass();
-//        String className = testResult.getName();
-//        String methodName = testResult.getMethod().getMethodName();
+        Class classDetails = testResult.getMethod().getRealClass();
+        String className = testResult.getName();
+        String methodName = testResult.getMethod().getMethodName();
 //        Class<?>[] parameters = testResult.getMethod().getConstructorOrMethod().getParameterTypes();
 //        Jira jiraDetails = classDetails.getMethod(className, parameters).getAnnotation(Jira.class);
 //                   
-//		TestDataUtil.testDataMapWithHeaders.set(null);
-//        System.out.println("Ending test:" + methodName);
+		TestDataUtil.testDataMapWithHeaders.set(null);
+        System.out.println("Ending test:" + methodName);
 	}
 
 	/**

@@ -34,7 +34,7 @@
 					<!--build will not fail if there are test failures-->'
 					<testFailureIgnore>true</testFailureIgnore>
 					<suiteXmlFiles>
-						<suiteXmlFile>Test_bvt_testng.xml</suiteXmlFile>
+						<suiteXmlFile>TestNG.xml</suiteXmlFile>
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>
