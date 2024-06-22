@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="APITesting" parallel="methods" thread-count="10" configfailurepolicy="continue">
 
-	<parameter name="Env_Name" value="stage"/>
+	<parameter name="Env_Name" value="${env}"/>
     <parameter name="API_TIMEOUT_MS" value="180000"/>
     <parameter name="RETRY_FAILED_TESTS" value="true"/>
     <parameter name="MAX_RETRY_COUNT" value="2"/>
