@@ -1,90 +1,98 @@
-pipeline:
-  agent:
-    label: 'your-label-here'  // Replace with your Jenkins agent label or 'any' for any available agent
+tools:
+  maven: '3.6.0'
+  jdk:
+    name: 'Azul JDK 11'
 
-  tools:
-    maven: 'Maven'  // Specify the Maven installation configured in Jenkins Global Tool Configuration
+parameters:
+  - name: tag
+    type: string
+  - name: testrunid
+    type: string
+  - name: reportPath
+    type: string
 
-  parameters:
-    - string:
-        name: 'tag'
-        defaultValue: 'APITesting'
-        description: 'Tag to be used for the job'
+env:
+  global:
+    variables:
+      reportUrl: "---URL---"
+      buildUrl: "http://localhost:8080/job/APIAutomation/"
+      REPOSITORY_URL: "https://github.com/Sumit10031995/APIFramework.git"
+      appName: "QE_FRAMEWORK"
+      DEFAULT_TAG: 'APITesting'
+      testEnvironment: "${TestEnvironment}"
+      buildLink: "${buildUrl}/${BUILD_NUMBER}"
+      extentReportLink: "${reportUrl}/${JOB_NAME}/${BUILD_NUMBER}/${reportPath}"
+      branchName: "${TRIGGER_BRANCH}"
+      tagName: "${tag}"
 
-    - string:
-        name: 'testrunid'
-        defaultValue: ''
-        description: 'Test run ID (optional)'
+triggers:
+  push:
+    branches:
+      ignore:
+        - '*'
+  cron:
+    - cron: '30 18 * * *'  # every day 7:30 AM IST
 
-    - string:
-        name: 'reportPath'
-        defaultValue: ''
-        description: 'Path for test report'
+jobs:
+  flows:
+    default:
+      - flow:
+          name: 'multiFlows'
 
-  environment:
-    TEST_ENVIRONMENT: "${TestEnvironment}"
-
-  options:
-    skipDefaultCheckout: true  // Skip default checkout to manually configure Git
-
-  stages:
-    - stage: 'Setup'
-      steps:
-        - script:
-            name: 'Setup Java'
-            env:
-              JAVA_HOME: "${tool 'Azul JDK 11'}"  // Replace 'Azul JDK 11' with your Java installation tool name
-            steps:
-              - sh 'echo "Setting JAVA_HOME..."'
-
-    - stage: 'Checkout'
-      steps:
-        - script:
-            name: 'Checkout Git Repository'
-            env:
-              REPOSITORY_URL: "https://github.com/Sumit10031995/APIFramework.git"
-            if:
-              branch 'main'  // Adjust branchName as per your repository
-            steps:
-              - checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'your-credentials-id', url: env.REPOSITORY_URL]]])
-
-    - stage: 'Build'
-      steps:
-        - script:
-            name: 'Build with Maven'
-            steps:
-              - sh 'mvn clean package'
-
-    - stage: 'Test'
-      steps:
-        - script:
-            name: 'Run Tests'
-            steps:
-              - sh 'mvn test'
-
-    - stage: 'Publish Reports'
-      steps:
-        - script:
-            name: 'Publish Test Reports'
-            steps:
-              - sh 'echo "Publishing test reports..."'
-
-    - stage: 'Cleanup'
-      steps:
-        - script:
-            name: 'Perform Cleanup'
-            steps:
-              - sh 'echo "Performing cleanup..."'
-
-  post:
-    always:
+    APITesting:
       - script:
-          name: 'Finalize Pipeline'
+          name: 'Set APITesting tag'
           steps:
-            - sh 'echo "Pipeline completed."'
+            - setPipelineVariable:
+                name: tag
+                value: 'APITesting'
+            - flow:
+                name: 'multiFlows'
 
-    failure:
+    multiFlows:
       - script:
-          name: 'Handle Pipeline Failure'
+          name: 'Version of tools'
           steps:
-            - sh 'echo "Pipeline failed! Check logs for details."'
+            - shell: 'echo "Versions of tools.."'
+            - shell: 'java -version'
+            - shell: 'mvn -v'
+      - script:
+          name: 'Handle testrunid'
+          steps:
+            - if:
+                condition: "${env.testrunid}"
+                steps:
+                  - shell: 'echo "Job Triggered with RUN ID ${env.testrunid}"'
+                else:
+                  - script:
+                      name: 'Generate testrunid if not provided'
+                      steps:
+                        - setPipelineVariable:
+                            name: testrunid
+                            value: '${currentBuildTime("yyyy-MM-dd_HH-mm-ss-SSS")}'
+                        - shell: 'echo "Job Triggered with RUN ID ${env.testrunid}"'
+            - script:
+                name: 'Handle tag'
+                steps:
+                  - if:
+                      condition: "${env.tag}"
+                      steps:
+                        - shell: 'echo "Job Triggered with Tag ${env.tag}"'
+                        - setPipelineVariable:
+                            name: reportPath
+                            value: "testResult/Test_Results_${env.tag}.html"
+                      else:
+                        - setPipelineVariable:
+                            name: tag
+                            value: "${DEFAULT_TAG}"
+                        - shell: 'echo "Job Triggered with Default Tag ${env.tag}"'
+                        - setPipelineVariable:
+                            name: reportPath
+                            value: "testResult/Test_Results_${env.tag}.html"
+      - script:
+          name: 'Run Maven commands'
+          steps:
+            - shell: 'mvn clean'
+            - shell: 'mvn -f ./pom.xml test -Dislocalrun="false" -Dsurefire.suiteXmlFiles="./${env.tag}.xml" -DrunId=${env.testrunid}'
+      - flow:
+          name: 'publishReport'
