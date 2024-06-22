@@ -16,7 +16,9 @@ envs:
     variables:
       reportUrl: "---URL---"
       buildUrl: "http://localhost:8080/job/APIAutomation/"
+      branchName: "main"
       REPOSITORY_URL: "https://github.com/Sumit10031995/APIFramework.git"
+      branchName: "main"  # Adjust branchName as per your repository
       appName: "QE_FRAMEWORK"
       DEFAULT_TAG: 'APITesting'
       testEnvironment: "${TestEnvironment}"
