@@ -2,9 +2,6 @@ pipeline:
   agent:
     any
 
-  environment:
-    JAVA_HOME: "/path/to/your/jdk"
-
   parameters:
     - name: tag
       type: string
@@ -16,8 +13,12 @@ pipeline:
       type: string
       default: "testResult/Test_Results_${tag}.html"
 
+  tools:
+    maven: 'Maven 3.6.0'
+    jdk: 'Azul JDK 11'
+
   options:
-    skipDefaultCheckout: true  # Disable default checkout to handle it explicitly
+    skipDefaultCheckout: true
 
   stages:
     - stage: Checkout
