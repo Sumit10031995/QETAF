@@ -12,12 +12,13 @@ public class GETAPITesting extends BaseTest{
 	
 	//url=https://jsonplaceholder.typicode.com/posts
 	private static final String getAPIEndPoint="posts";
-	@Test(groups = {"GET"})
+	@Test(groups = {"GET","API"})
 	public void getAPITesting() throws Exception {
-     APIResponse apiDriver = new ApiDriver(configurator.getEnvironmentParameter(ENVConstants.baseURL), getAPIEndPoint).GET();
-     assertion.assertEquals(apiDriver.getHttpStatusCode(),200, "Validate HTTP status code", false);
-     assertion.assertNotNull(apiDriver.getResposneBody(), "Response shouldn't be null", false);
-     System.out.println(apiDriver.getValueFromResponseBody("findAll { it.id == 1 }"));
+	 reporter.createTestStep("Do GET API call and verify HTTP response code");
+     APIResponse apiResponse = new ApiDriver(configurator.getEnvironmentParameter(ENVConstants.baseURL), getAPIEndPoint).GET();
+     assertion.assertEquals(apiResponse.getHttpStatusCode(),200, "Validate HTTP status code", false);
+     assertion.assertNotNull(apiResponse.getResposneBody(), "Response shouldn't be null", false);
+     System.out.println(apiResponse.getValueFromResponseBody("findAll { it.id == 1 }"));
      
      //////////////////////////////////////////////////////////////////////////////////////////////////////
      RestAssured.baseURI="https://jsonplaceholder.typicode.com/";

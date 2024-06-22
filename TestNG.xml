@@ -16,7 +16,7 @@
    <test name="Tests" >
    <groups>
 	<run>
-		<include name="GET"></include>
+		<include name="API"></include>
 		<exclude name="WIP"></exclude>
 	</run>
    </groups>

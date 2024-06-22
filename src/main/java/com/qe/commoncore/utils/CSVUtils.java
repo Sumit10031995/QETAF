@@ -19,10 +19,10 @@ public class CSVUtils {
 	 * @throws Exception
 	 * Read data from a .CSV file and store the values in a list of maps
 	 */
-	public static List<Map<String, String>> readDataFromCSVFile(String filePath) throws Exception {
+	public static List<Map<String, String>> readDataFromCSVFile(String fileName) throws Exception {
 		List<Map<String, String>> objectsList = new ArrayList();
 
-		try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
+		try (CSVReader csvReader = new CSVReader(new FileReader(CSVReader.class.getClassLoader().getResource(fileName).getFile()))) {
 			String[] headings = csvReader.readNext();
 			
 			if (headings.length == 0) {
@@ -54,10 +54,10 @@ public class CSVUtils {
 	 * @throws Exception
 	 * Read data from a .CSV file ,Filter the given inputs and store the values in a list of maps
 	 */
-	public static List<Map<String, String>> readDataFromCSVFile(String filePath,String columnNmae,List<String> identityList) throws Exception {
+	public static List<Map<String, String>> readDataFromCSVFile(String fileName,String columnNmae,List<String> identityList) throws Exception {
 		List<Map<String, String>> objectsList = new ArrayList();
 
-		try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
+		try (CSVReader csvReader = new CSVReader(new FileReader(CSVReader.class.getClassLoader().getResource(fileName).getFile()))) {
 			String[] headings = csvReader.readNext();
 			for(int i=0;i<headings.length;i++) {
 				headings[i]=headings[i].toLowerCase();
@@ -67,7 +67,7 @@ public class CSVUtils {
 				throw new Exception("Missing Headings in the .CSV file");
 			}
 			
-			int identityIndex=Arrays.asList(headings).indexOf(columnNmae);
+			int identityIndex=Arrays.asList(headings).indexOf(columnNmae.toLowerCase());
 			
 			List<String[]> readAllRows = csvReader.readAll();
 			List<String[]> filteredRows = new ArrayList();
@@ -104,10 +104,10 @@ public class CSVUtils {
 	 * @throws Exception
 	 * This method use to fetch a column details from CSV file
 	 */
-	public static List<String> readDataColumnFromCSVFile(String filePath,String columnName) throws Exception {
+	public static List<String> readDataColumnFromCSVFile(String fileName,String columnName) throws Exception {
 		List<String> objectsList = new ArrayList();
 
-		try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
+		try (CSVReader csvReader = new CSVReader(new FileReader(CSVReader.class.getClassLoader().getResource(fileName).getFile()))) {
 			String[] headings = csvReader.readNext();
 			for(int i=0;i<headings.length;i++) {
 				headings[i]=headings[i].toLowerCase();
@@ -138,10 +138,10 @@ public class CSVUtils {
 	 * @throws Exception
 	 * Read data from a .CSV file and store the two dimensional array
 	 */
-	public static String[][] readDataFromCSV_File(String filePath) throws Exception {
+	public static String[][] readDataFromCSV_File(String fileName) throws Exception {
 		String[][] objectArray = null;
 		
-		try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
+		try (CSVReader csvReader = new CSVReader(new FileReader(CSVReader.class.getClassLoader().getResource(fileName).getFile()))) {
 			List<String[]> readAllRows = csvReader.readAll();
 
 			if (readAllRows.size() == 0) {
@@ -167,10 +167,10 @@ public class CSVUtils {
 	 * @throws Exception
 	 * Read data from a .CSV file ,Filter the given inputs and store it to a two dimensional object
 	 */
-	public static String[][] readDataFromCSV_File(String filePath,String columnNmae,List<String> identityList) throws Exception {
+	public static String[][] readDataFromCSV_File(String fileName,String columnNmae,List<String> identityList) throws Exception {
 		String[][] objectArray = null;
 		
-		try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
+		try (CSVReader csvReader = new CSVReader(new FileReader(CSVReader.class.getClassLoader().getResource(fileName).getFile()))) {
 			String[] headings = csvReader.readNext();
 			for(int i=0;i<headings.length;i++) {
 				headings[i]=headings[i].toLowerCase();
@@ -180,7 +180,7 @@ public class CSVUtils {
 				throw new Exception("Missing Headings in the .CSV file");
 			}
 			
-			int identityIndex=Arrays.asList(headings).indexOf(columnNmae);
+			int identityIndex=Arrays.asList(headings).indexOf(columnNmae.toLowerCase());
  
 			List<String[]> readAllRows = csvReader.readAll();
             List<String[]> filteredRows = new ArrayList();
