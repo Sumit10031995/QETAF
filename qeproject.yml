@@ -36,8 +36,8 @@ flows:
   default:
      - call: multiFlows
 
-  Testone:
-    - var(tag = 'Testone')
+  APITesting:
+    - var(tag = 'APITesting')
     - call: multiFlows
 
   TestTwo:

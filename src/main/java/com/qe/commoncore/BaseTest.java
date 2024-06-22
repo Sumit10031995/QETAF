@@ -23,7 +23,6 @@ import com.qe.commoncore.utils.TestDataUtil;
 import com.qe.retry.Retry;
 import com.qe.retry.RetryListener;
 
-
 @Listeners({ com.qe.commoncore.TestListener.class })
 public class BaseTest {
 
@@ -45,7 +44,7 @@ public class BaseTest {
 	private static ThreadLocal<Integer> defaultScenarioName = new ThreadLocal<Integer>();
 
 	@BeforeSuite(alwaysRun = true)
-	public static void beforeSuite(ITestContext context) throws Throwable {
+	public void beforeSuite(ITestContext context) throws Throwable {
 		Map<String, String> params = context.getCurrentXmlTest().getAllParameters();
 		configurator.initializeParameters(params);
 
@@ -66,7 +65,7 @@ public class BaseTest {
      * @BeforeMethod annotated methods. TestNG can inject only one of <ITestResult ,ITestContext, XmlTest, Method, Object[], ITestResult>
      */
     @BeforeMethod(alwaysRun = true)
-    public static void beforeMethod(ITestResult testResult, Object[] testDataRow) throws Exception
+    public void beforeMethod(ITestResult testResult, Object[] testDataRow) throws Exception
     {
     	TestDataUtil.setTestDataMapWithHeaders(testDataRow);
     	fetchJiraDetailsAndAddToReport(testResult);
@@ -80,7 +79,7 @@ public class BaseTest {
      * @description It will fetch Jira details and add to Extent report. 
      * If user enable retry feature then it will append retry count to the method name and log to Extent report
      */
-	public static void fetchJiraDetailsAndAddToReport(ITestResult testResult) throws Exception {
+	public void fetchJiraDetailsAndAddToReport(ITestResult testResult) throws Exception {
 		// Start Extent Test
 		Class classDetails = testResult.getMethod().getRealClass();
 		String method = testResult.getMethod().getMethodName();
@@ -108,7 +107,7 @@ public class BaseTest {
 	 * @throws Exception
 	 */
 	@AfterMethod(alwaysRun = true)
-	public static void afterMethod(ITestResult testResult) throws Exception {
+	public void afterMethod(ITestResult testResult) throws Exception {
         Class classDetails = testResult.getMethod().getRealClass();
         String className = testResult.getName();
         String methodName = testResult.getMethod().getMethodName();
@@ -125,8 +124,11 @@ public class BaseTest {
 	 * @param context ITestContext is test result data provided by testng.
 	 */
 	@AfterSuite(alwaysRun = true)
-	public static void afterSuite(ITestContext context) {
-
+	public void afterSuite(ITestContext context) {
+        reporter.extent.flush();
+        //send mail
+        //if(Boolean.parseBoolean(configurator.getParameter(ContextConstant.TRIGGER_MAIL)))
+        //new EmailUtil().sendMail();
 	}
 
 	/**
@@ -136,7 +138,7 @@ public class BaseTest {
 	 * @Desc This method dynamically generates a test method name by analyzing the
 	 *       retry count and scenario details.
 	 */
-	private static synchronized String getMethodName(String cls, String method) {
+	private synchronized String getMethodName(String cls, String method) {
 		String identifier = null;
 		Map<String, String> dataprovider = TestDataUtil.testDataMapWithHeaders.get();
 		Boolean isContainsScenarioDetails = dataprovider != null

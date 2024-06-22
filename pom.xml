@@ -29,9 +29,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M3</version>
 				<configuration>
-				<!--don't skip any test-->'
+				<!--don't skip any test-->
 					<skipTests>false</skipTests>
-					<!--build will not fail if there are test failures-->'
+					<!--build will not fail if there are test failures-->
 					<testFailureIgnore>true</testFailureIgnore>
 					<suiteXmlFiles>
 						<suiteXmlFile>TestNG.xml</suiteXmlFile>
@@ -42,15 +42,14 @@
 	</build>
 
 	<dependencies>
-
-		<!-- use to do API automation-->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>4.2.0</version>
-		</dependency>
-
-		<!-- use to do UI automation-->
+        <!-- use to do API automation-->
+	       <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>5.3.0</version> <!-- Replace with the latest version -->
+        </dependency>
+        
+        <!-- use to do UI automation-->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
@@ -133,6 +132,7 @@
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.10.2</version>
-		</dependency>
+		</dependency> 
+
 	</dependencies>
 </project>

@@ -63,7 +63,7 @@ public class Configurator {
 	public void initializeParameters(Map<String, String> params) throws Throwable {
 		try {
 			setOptionalParameter(params);
-			setEnvironmentParameters(params);
+			setEnvironmentParameters();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -163,7 +163,7 @@ public class Configurator {
 	 * @param params : Map
 	 * @throws Throwable
 	 */
-	public void setEnvironmentParameters(Map<String, String> params) throws Throwable {
+	public void setEnvironmentParameters() throws Throwable {
 
 		String envFileName = parameterMap.get(ContextConstant.ENV_NAME).trim().toLowerCase() + "_env.properties";
 

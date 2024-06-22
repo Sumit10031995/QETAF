@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.Gson;
 import com.qe.commoncore.utils.JsonUtil;
 
 import io.restassured.response.Response;
@@ -11,7 +12,7 @@ import io.restassured.response.Response;
 public class APIResponse {
 	
 	public Response response;
-	   
+   
 	public APIResponse()
 	{
 		//do nothing
@@ -44,5 +45,10 @@ public class APIResponse {
     
     public String PrettyPrint () {
     	return response.prettyPrint();
+    }
+    
+    public <T>T serealizeObject(Object obj,Class<T> cls) {
+    	Gson gson = new Gson();
+    	return gson.fromJson(obj.toString(), cls);
     }
 }

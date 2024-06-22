@@ -36,7 +36,7 @@ public class JsonUtil {
 	 * 
 	 */
 
-	public static Object getValue(String jsonResponse, String jsonPath) throws Exception {
+	public static synchronized Object getValue(String jsonResponse, String jsonPath) throws Exception {
 		
 		JsonPath jpath = new JsonPath(jsonResponse);
 		obj = jpath.get(jsonPath);
@@ -52,9 +52,10 @@ public class JsonUtil {
 	 * @param jsonPath     as String
 	 * @return List of Object present at jsonPath in the jsonResponse
 	 * @exception throws nullPointerException if jsonpath is not found
+	 * Collections.singletonList-->The list created by Collections.singletonList is immutable, meaning its size and content cannot change. This ensures thread safety and avoids unintended modifications.
 	 */
 
-	public static List<Object> getValues(String jsonResponse, String jsonPath) throws Exception {
+	public static synchronized List<Object> getValues(String jsonResponse, String jsonPath) throws Exception {
 
 		JsonPath jpath = new JsonPath(jsonResponse);
 		obj = jpath.get(jsonPath);
@@ -75,7 +76,7 @@ public class JsonUtil {
 	 * @return size of List of Object present at jsonPath in the jsonResponse
 	 * @exception throws nullPointerException if jsonpath is not found
 	 */
-	public static int getCount(String jsonResponse, String jsonPath) throws Exception {
+	public static synchronized int getCount(String jsonResponse, String jsonPath) throws Exception {
 
 		JsonPath jpath = new JsonPath(jsonResponse);
 		obj = jpath.get(jsonPath);
@@ -89,7 +90,7 @@ public class JsonUtil {
 	}
 
 
-	public static String prettyPrint(String jsonString) {
+	public static  String prettyPrint(String jsonString) {
 		String prettyJsonString = null;
 		try {
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -126,7 +127,7 @@ public class JsonUtil {
 	 * @param dto        of any Type
 	 * @throws JsonProcessingException 
 	 */
-	public static <T> T getObjectFromJsonString(String jsonString, Class<T> dto) throws JsonProcessingException  {
+	public static synchronized <T> T getObjectFromJsonString(String jsonString, Class<T> dto) throws JsonProcessingException  {
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
 			return objectMapper.readValue(jsonString, dto);
