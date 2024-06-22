@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class FileUtil {
@@ -44,9 +45,9 @@ public class FileUtil {
         }
     }
     
-    public static String readFile(String filePath) {
+    public static String readFile(String fileName) {
         String fileContent = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FileUtil.class.getClassLoader().getResource(fileName).getFile()))) {
             fileContent = reader.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,9 +73,28 @@ public class FileUtil {
      * @return true if the file size is within the limit, false otherwise
      * @throws IOException if an I/O error occurs
      */
-    public static boolean isFileSizeValid(String filePath, long maxSize) throws IOException{
-        Path path = Paths.get(filePath);
+    public static boolean isFileSizeValid(String fileName, long maxSize) throws IOException{
+        Path path = Paths.get(FileUtil.class.getClassLoader().getResource(fileName).getFile());
         long fileSize = Files.size(path);
         return fileSize <= maxSize;
     }
+    
+    /**
+     * 
+     * @param fileName
+     * @param key
+     * @return
+     * read data from property file
+     * @throws Exception 
+     */
+	public static String getPropertyDetails(String fileName,String key) throws Exception {
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileReader(FileUtil.class.getClassLoader().getResource(fileName).getFile()));
+			return prop.getProperty(key).toString();
+
+		} catch (Exception e) {
+            throw new Exception("Unable to read data from properties file", e);
+		}
+	}
 }

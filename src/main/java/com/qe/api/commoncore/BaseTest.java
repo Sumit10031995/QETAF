@@ -1,4 +1,4 @@
-package com.qe.commoncore;
+package com.qe.api.commoncore;
 
 import java.util.Map;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import com.qe.commoncore.utils.TestDataUtil;
 import com.qe.retry.Retry;
 import com.qe.retry.RetryListener;
 
-@Listeners({ com.qe.commoncore.TestListener.class })
+@Listeners({ com.qe.api.commoncore.TestListener.class })
 public class BaseTest {
 
 	private static final Logger log = LoggerFactory.getLogger(BaseTest.class);

@@ -44,5 +44,8 @@ public class ContextConstant {
 	
 	//mail send to
 	public static final String MAIL_TO = "MAIL_TO";
+	
+	//browser send to
+	public static final String BROWSER = "BROWSER";
 
 }

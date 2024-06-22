@@ -10,7 +10,7 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import com.opencsv.exceptions.CsvException;
-import com.qe.commoncore.BaseTest;
+import com.qe.api.commoncore.BaseTest;
 
 import org.apache.commons.lang3.StringUtils;
 import java.io.File;

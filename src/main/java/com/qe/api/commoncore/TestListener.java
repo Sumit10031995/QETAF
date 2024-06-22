@@ -1,4 +1,4 @@
-package com.qe.commoncore;
+package com.qe.api.commoncore;
 
 import org.testng.ITestListener;
 import org.testng.ITestResult;

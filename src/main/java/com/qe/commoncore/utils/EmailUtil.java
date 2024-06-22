@@ -14,8 +14,8 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qe.commoncore.BaseTest;
-import com.qe.commoncore.Configurator;
+import com.qe.api.commoncore.BaseTest;
+import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.config.EmailConfig;
 import com.qe.commoncore.constants.ContextConstant;
 

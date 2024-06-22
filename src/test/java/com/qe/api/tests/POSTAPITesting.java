@@ -3,10 +3,10 @@ package com.qe.api.tests;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
 
+import com.qe.api.commoncore.BaseTest;
 import com.qe.api.constants.ENVConstants;
 import com.qe.apicore.impl.APIResponse;
 import com.qe.apicore.impl.ApiDriver;
-import com.qe.commoncore.BaseTest;
 import com.qe.commoncore.utils.CSVUtils;
 
 import static io.restassured.RestAssured.*;

@@ -1,4 +1,4 @@
-package com.qe.commoncore;
+package com.qe.api.commoncore;
 
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
@@ -132,11 +132,7 @@ public class Configurator {
 		// log REPORT_RETRY_TESTS tests to extent report
 			parameterMap.put(ContextConstant.REPORT_RETRY_TESTS,
 						params.containsKey(ContextConstant.REPORT_RETRY_TESTS) ? params.get(ContextConstant.REPORT_RETRY_TESTS)
-								: "false");
-		// jira components
-			parameterMap.put(ContextConstant.JIRA_COMPONENTS,
-						params.containsKey(ContextConstant.JIRA_COMPONENTS) ? params.get(ContextConstant.JIRA_COMPONENTS)
-											: "WMUS CP 1,WMUS CP 2");	
+								: "false");	
 		// trigger mail
 			parameterMap.put(ContextConstant.TRIGGER_MAIL,
 						params.containsKey(ContextConstant.TRIGGER_MAIL) ? params.get(ContextConstant.TRIGGER_MAIL)
@@ -147,6 +143,11 @@ public class Configurator {
 				(mailIDs!=null)? 
 						(mailIDs.replaceAll("\\s", "").equals("") ? null : mailIDs)
 						: null);
+		
+		// browser
+		parameterMap.put(ContextConstant.BROWSER,
+				params.containsKey(ContextConstant.BROWSER) ? params.get(ContextConstant.BROWSER)
+									: "chrome");
 			
 		// Add rest of the custom parameters in map
 		for (Entry<String, String> e : params.entrySet()) {

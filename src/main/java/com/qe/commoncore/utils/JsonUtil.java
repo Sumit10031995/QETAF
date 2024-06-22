@@ -1,19 +1,18 @@
 package com.qe.commoncore.utils;
 
+import java.io.FileReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
+import org.json.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
 import io.restassured.path.json.JsonPath;
 
 
@@ -25,6 +24,52 @@ import io.restassured.path.json.JsonPath;
 public class JsonUtil {
 
 	static Object obj;
+
+	/**
+	 * 
+	 * @return
+	 * over-ride this method to set default file path 
+	 * 
+	 * How to use?
+	 * public String getDataSetPath() {
+		return "src/test/resources/JSON/user.json";
+	  }
+
+	   public UsersDTO getUserDetails(String dataKey) {
+		return getValue(dataKey, UsersDTO.class);
+	  }
+
+	   public UsersDTO getOwnerDetails() {
+		return getUserDetails("OWNER");
+	  }
+
+	    public UsersDTO getAdminDetails() {
+		return getUserDetails("ADMIN");
+	  }
+	 */
+	public static String getDataSetPath() {
+		return "";
+	}
+
+	/**
+	 * 
+	 * @param <T>
+	 * @param key
+	 * @param file
+	 * @param tClass
+	 * @return
+	 * this method is use to read data from json file
+	 */
+	private static synchronized <T> T getValue(String key, Class<T> tClass) {
+		T t=null;
+		try (FileReader reader = new FileReader(getDataSetPath())) {
+	        JSONObject jsonObject = new JSONObject(reader);
+			return new Gson().fromJson(jsonObject.get(key).toString(), tClass);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return t;
+	}
 
 	/**
 	 * This method returns the value of a JsonObject in Object return type

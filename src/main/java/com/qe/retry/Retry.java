@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
-import com.qe.commoncore.Configurator;
+import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.constants.ContextConstant;
 
 import net.jodah.failsafe.RetryPolicy;
