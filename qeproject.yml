@@ -3,7 +3,7 @@ pipeline {
   
   parameters {
     string(name: 'tag', defaultValue: 'APITesting', description: 'Specify the tag')
-    string(name: 'testrunid', defaultValue: "${currentBuildTime('yyyy-MM-dd_HH-mm-ss-SSS')}", description: 'Specify the test run ID')
+    string(name: 'testrunid', defaultValue: "${generateTimestamp()}", description: 'Specify the test run ID')
     string(name: 'reportPath', defaultValue: "testResult/Test_Results_${params.tag}.html", description: 'Specify the report path')
   }
   
@@ -86,4 +86,10 @@ pipeline {
       }
     }
   }
+}
+
+// Function to generate timestamp in the format yyyy-MM-dd_HH-mm-ss-SSS
+def generateTimestamp() {
+  def sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-SSS")
+  return sdf.format(new Date())
 }
