@@ -1,95 +1,90 @@
-pipeline {
-  agent any
-  
-  parameters {
-    string(name: 'tag', defaultValue: 'APITesting', description: 'Specify the tag')
-    string(name: 'testrunid', defaultValue: "${generateTimestamp()}", description: 'Specify the test run ID')
-    string(name: 'reportPath', defaultValue: "testResult/Test_Results_${params.tag}.html", description: 'Specify the report path')
-  }
-  
-  environment {
-    reportUrl = "---URL---"
-    buildUrl = "http://localhost:8080/job/APIAutomation/"
-    REPOSITORY_URL = "https://github.com/Sumit10031995/APIFramework.git"
-    branchName = "${env.BRANCH_NAME}"
-    appName = "QE_FRAMEWORK"
-    DEFAULT_TAG = 'APITesting'
-    testEnvironment = "${TestEnvironment}"
-    buildLink = "${buildUrl}/${BUILD_NUMBER}"
-    extentReportLink = "${reportUrl}/${JOB_NAME}/${BUILD_NUMBER}/${params.reportPath}"
-    tagName = "${params.tag}"
-  }
-  
-  options {
-    skipDefaultCheckout()
-  }
-  
-  triggers {
-    cron('30 18 * * *') // Run every day at 7:30 AM IST
-  }
-  
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-    
-    stage('Build') {
-      steps {
-        script {
-          echo "Building with Maven..."
-          sh 'mvn clean package'
-        }
-      }
-    }
-    
-    stage('Test') {
-      when {
-        expression { params.testrunid != '' }
-      }
-      steps {
-        script {
-          echo "Running tests..."
-          sh "mvn test -Dislocalrun=false -Dsurefire.suiteXmlFiles=./${params.tag}.xml -DrunId=${params.testrunid}"
-        }
-      }
-    }
-    
-    stage('Publish Reports') {
-      steps {
-        script {
-          echo "Publishing reports..."
-          echo "Report URL: ${env.reportUrl}/${env.JOB_NAME}/${env.BUILD_NUMBER}/${params.reportPath}"
-          // Add additional steps to publish reports or artifacts as needed
-        }
-      }
-    }
-    
-    stage('Cleanup') {
-      steps {
-        deleteDir()
-      }
-    }
-  }
-  
-  post {
-    always {
-      script {
-        echo "Pipeline completed."
-      }
-    }
-    
-    failure {
-      script {
-        echo "Pipeline failed! Check logs for details."
-      }
-    }
-  }
-}
+pipeline:
+  agent:
+    label: 'your-label-here'  # Replace with your Jenkins agent label or 'any' for any available agent
 
-// Function to generate timestamp in the format yyyy-MM-dd_HH-mm-ss-SSS
-def generateTimestamp() {
-  def formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSS")
-  return java.time.LocalDateTime.now().format(formatter)
-}
+  tools:
+    maven: 'Maven'  # Specify the Maven installation configured in Jenkins Global Tool Configuration
+
+  parameters:
+    - string:
+        name: 'tag'
+        defaultValue: 'APITesting'
+        description: 'Tag to be used for the job'
+
+    - string:
+        name: 'testrunid'
+        defaultValue: ''
+        description: 'Test run ID (optional)'
+
+    - string:
+        name: 'reportPath'
+        defaultValue: ''
+        description: 'Path for test report'
+
+  environment:
+    TEST_ENVIRONMENT: "${TestEnvironment}"
+
+  options:
+    skipDefaultCheckout: true  # Skip default checkout to manually configure Git
+
+  stages:
+    - stage: 'Setup'
+      steps:
+        - script:
+            name: 'Setup Java'
+            env:
+              JAVA_HOME: "${tool 'Azul JDK 11'}"  # Replace 'Azul JDK 11' with your Java installation tool name
+            steps:
+              - sh 'echo "Setting JAVA_HOME..."'
+
+    - stage: 'Checkout'
+      steps:
+        - script:
+            name: 'Checkout Git Repository'
+            env:
+              REPOSITORY_URL: "https://github.com/Sumit10031995/APIFramework.git"
+            if:
+              branch 'main'  # Adjust branchName as per your repository
+            steps:
+              - checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'your-credentials-id', url: env.REPOSITORY_URL]]])
+
+    - stage: 'Build'
+      steps:
+        - script:
+            name: 'Build with Maven'
+            steps:
+              - sh 'mvn clean package'
+
+    - stage: 'Test'
+      steps:
+        - script:
+            name: 'Run Tests'
+            steps:
+              - sh 'mvn test'
+
+    - stage: 'Publish Reports'
+      steps:
+        - script:
+            name: 'Publish Test Reports'
+            steps:
+              - sh 'echo "Publishing test reports..."'
+
+    - stage: 'Cleanup'
+      steps:
+        - script:
+            name: 'Perform Cleanup'
+            steps:
+              - sh 'echo "Performing cleanup..."'
+
+  post:
+    always:
+      - script:
+          name: 'Finalize Pipeline'
+          steps:
+            - sh 'echo "Pipeline completed."'
+
+    failure:
+      - script:
+          name: 'Handle Pipeline Failure'
+          steps:
+            - sh 'echo "Pipeline failed! Check logs for details."'
