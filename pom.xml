@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>APIFramework</groupId>
-	<artifactId>APIFramework</artifactId>
+	<groupId>QETAF</groupId>
+	<artifactId>QETAF</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<!--This tags are use to generate jar file after build process-->
 	<packaging>jar</packaging>
-	<name>APIFramework</name>
+	<name>QETAF</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
