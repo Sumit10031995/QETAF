@@ -1,74 +1,89 @@
-pipeline:
-  agent:
-    any
-
-  parameters:
-    - name: tag
-      type: string
-      default: 'APITesting'
-    - name: testrunid
-      type: string
-      default: "${currentBuildTime('yyyy-MM-dd_HH-mm-ss-SSS')}"
-    - name: reportPath
-      type: string
-      default: "testResult/Test_Results_${tag}.html"
-
-  tools:
-    maven: 'Maven 3.6.0'
-    jdk: 'Azul JDK 11'
-
-  options:
-    skipDefaultCheckout: true
-
-  stages:
-    - stage: Checkout
-      steps:
-        - checkout scm
-
-    - stage: Build
-      steps:
-        - script:
-            name: 'Build with Maven'
-            script: |
-              mvn clean
-              mvn -f ./pom.xml package
-
-    - stage: Test
-      when: expression { params.testrunid != '' }
-      steps:
-        - script:
-            name: 'Run Tests'
-            script: |
-              mvn -f ./pom.xml test \
-                -Dislocalrun="false" \
-                -Dsurefire.suiteXmlFiles="./${params.tag}.xml" \
-                -DrunId=${params.testrunid}
-
-    - stage: Publish Reports
-      steps:
-        - script:
-            name: 'Publishing reports...'
-            script: |
-              echo "Report URL: ${env.reportUrl}/${env.JOB_NAME}/${env.BUILD_NUMBER}/${params.reportPath}"
-              # Add additional steps to publish reports or artifacts as needed
-
-    - stage: Cleanup
-      steps:
-        - deleteDir()
-
-  post:
-    always:
-      - script:
-          name: 'Completion Message'
-          script: |
-            echo "Build completed successfully!"
-
-    failure:
-      - script:
-          name: 'Failure Message'
-          script: |
-            echo "Build failed! Check logs for details."
-
-triggers:
-  cron:
-    - cron: '30 18 * * *'  # Run every day at 7:30 AM IST
+pipeline {
+  agent any
+  
+  parameters {
+    string(name: 'tag', defaultValue: 'APITesting', description: 'Specify the tag')
+    string(name: 'testrunid', defaultValue: "${currentBuildTime('yyyy-MM-dd_HH-mm-ss-SSS')}", description: 'Specify the test run ID')
+    string(name: 'reportPath', defaultValue: "testResult/Test_Results_${params.tag}.html", description: 'Specify the report path')
+  }
+  
+  environment {
+    reportUrl = "---URL---"
+    buildUrl = "http://localhost:8080/job/APIAutomation/"
+    REPOSITORY_URL = "https://github.com/Sumit10031995/APIFramework.git"
+    branchName = "${env.BRANCH_NAME}"
+    appName = "QE_FRAMEWORK"
+    DEFAULT_TAG = 'APITesting'
+    testEnvironment = "${TestEnvironment}"
+    buildLink = "${buildUrl}/${BUILD_NUMBER}"
+    extentReportLink = "${reportUrl}/${JOB_NAME}/${BUILD_NUMBER}/${params.reportPath}"
+    tagName = "${params.tag}"
+  }
+  
+  options {
+    skipDefaultCheckout()
+  }
+  
+  triggers {
+    cron('30 18 * * *') // Run every day at 7:30 AM IST
+  }
+  
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    
+    stage('Build') {
+      steps {
+        script {
+          echo "Building with Maven..."
+          sh 'mvn clean package'
+        }
+      }
+    }
+    
+    stage('Test') {
+      when {
+        expression { params.testrunid != '' }
+      }
+      steps {
+        script {
+          echo "Running tests..."
+          sh "mvn test -Dislocalrun=false -Dsurefire.suiteXmlFiles=./${params.tag}.xml -DrunId=${params.testrunid}"
+        }
+      }
+    }
+    
+    stage('Publish Reports') {
+      steps {
+        script {
+          echo "Publishing reports..."
+          echo "Report URL: ${env.reportUrl}/${env.JOB_NAME}/${env.BUILD_NUMBER}/${params.reportPath}"
+          // Add additional steps to publish reports or artifacts as needed
+        }
+      }
+    }
+    
+    stage('Cleanup') {
+      steps {
+        deleteDir()
+      }
+    }
+  }
+  
+  post {
+    always {
+      script {
+        echo "Pipeline completed."
+      }
+    }
+    
+    failure {
+      script {
+        echo "Pipeline failed! Check logs for details."
+      }
+    }
+  }
+}
