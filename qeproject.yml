@@ -1,9 +1,9 @@
 pipeline:
   agent:
-    label: 'your-label-here'  # Replace with your Jenkins agent label or 'any' for any available agent
+    label: 'your-label-here'  // Replace with your Jenkins agent label or 'any' for any available agent
 
   tools:
-    maven: 'Maven'  # Specify the Maven installation configured in Jenkins Global Tool Configuration
+    maven: 'Maven'  // Specify the Maven installation configured in Jenkins Global Tool Configuration
 
   parameters:
     - string:
@@ -25,7 +25,7 @@ pipeline:
     TEST_ENVIRONMENT: "${TestEnvironment}"
 
   options:
-    skipDefaultCheckout: true  # Skip default checkout to manually configure Git
+    skipDefaultCheckout: true  // Skip default checkout to manually configure Git
 
   stages:
     - stage: 'Setup'
@@ -33,7 +33,7 @@ pipeline:
         - script:
             name: 'Setup Java'
             env:
-              JAVA_HOME: "${tool 'Azul JDK 11'}"  # Replace 'Azul JDK 11' with your Java installation tool name
+              JAVA_HOME: "${tool 'Azul JDK 11'}"  // Replace 'Azul JDK 11' with your Java installation tool name
             steps:
               - sh 'echo "Setting JAVA_HOME..."'
 
@@ -44,7 +44,7 @@ pipeline:
             env:
               REPOSITORY_URL: "https://github.com/Sumit10031995/APIFramework.git"
             if:
-              branch 'main'  # Adjust branchName as per your repository
+              branch 'main'  // Adjust branchName as per your repository
             steps:
               - checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'your-credentials-id', url: env.REPOSITORY_URL]]])
 
