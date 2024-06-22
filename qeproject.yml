@@ -1,79 +1,98 @@
 tools:
-  maven: 3.6.0
+  maven: '3.6.0'
   jdk:
-    flavor: azul
-    version: 11
+    name: 'Azul JDK 11'
 
 parameters:
-  - tag: { type: string }
-  - testrunid: { type: string }
-  - reportPath: {type:  string }
+  - name: tag
+    type: string
+  - name: testrunid
+    type: string
+  - name: reportPath
+    type: string
 
 envs:
   global:
     variables:
       reportUrl: "---URL---"
-      buildUrl: "---URL---"
-      REPOSITORY_URL: "---URL---"
-      ALLOW_ARTIFACTORY: true
-      appName: "APP_NAME"
-      DEFAULT_TAG: 'DEFAULT_TAG'
+      buildUrl: "http://localhost:8080/job/APIAutomation/"
+      REPOSITORY_URL: "https://github.com/Sumit10031995/APIFramework.git"
+      appName: "QE_FRAMEWORK"
+      DEFAULT_TAG: 'APITesting'
       testEnvironment: "${TestEnvironment}"
-      buildLink: ${buildUrl}/${BUILD_NUMBER}
-      extentReportLink: ${reportUrl}/${JOB_NAME}/${BUILD_NUMBER}/${reportPath}
-      branchName: $TRIGGER_BRANCH
-      tagName: ${tag}
+      buildLink: "${buildUrl}/${BUILD_NUMBER}"
+      extentReportLink: "${reportUrl}/${JOB_NAME}/${BUILD_NUMBER}/${reportPath}"
+      branchName: "${TRIGGER_BRANCH}"
+      tagName: "${tag}"
 
 triggers:
   push:
-    disabled: true
-  manual:
-    name: Run API Tests
-    call: default
-  cron:  30 18 * * * #every day 7:30 AM IST
+    branches:
+      ignore:
+        - '*'
+  cron:
+    - cron: '30 18 * * *'  # every day 7:30 AM IST
 
-flows:
-  default:
-     - call: multiFlows
+jobs:
+  flows:
+    default:
+      - flow:
+          name: 'multiFlows'
 
-  APITesting:
-    - var(tag = 'APITesting')
-    - call: multiFlows
+    APITesting:
+      - script:
+          name: 'Set APITesting tag'
+          steps:
+            - setPipelineVariable:
+                name: tag
+                value: 'APITesting'
+            - flow:
+                name: 'multiFlows'
 
-  TestTwo:
-    - var(tag = 'TestTwo')
-    - call: multiFlows
-   
-
-  multiFlows:
-    - call: versionOfTools
-    - if: $testrunid
-      then:
-        - shell: echo "Job Triggered with RUN ID " $testrunid
-      else:
-        - var(testrunid): date '+%Y-%m-%d_%H-%M-%S-%3N'
-        - shell: echo "Job Triggered with RUN ID " $testrunid
-    - if: $tag
-      then:
-        - shell: echo "Job Triggered with Tag " $tag
-        - var(reportPath = 'testResult/Test_Results_$tag.html')
-      else:
-        - var(tag = $DEFAULT_TAG)
-        - shell: echo "Job Triggered with Default Tag " $tag
-        - var(reportPath = 'testResult/Test_Results_$tag.html')
-    - mvn clean
-    - mvn -f ./pom.xml test -Dislocalrun="false" -Dsurefire.suiteXmlFiles="./${tag}_TestNG.xml" -DrunId=$testrunid
-    - call: publishReport
-
-  versionOfTools:
-    - echo "Versions of tools.."
-    - (name JDK version) java -version
-    - (name Maven version) mvn -v
-
-  publishReport:
-    - publishReport:
-        context: testResult
-        dir: /test-report
-        index: Test_Results_${tag}.html
-        verbose: true
-
+    multiFlows:
+      - script:
+          name: 'Version of tools'
+          steps:
+            - shell: 'echo "Versions of tools.."'
+            - shell: 'java -version'
+            - shell: 'mvn -v'
+      - script:
+          name: 'Handle testrunid'
+          steps:
+            - if:
+                condition: "${env.testrunid}"
+                steps:
+                  - shell: 'echo "Job Triggered with RUN ID ${env.testrunid}"'
+                else:
+                  - script:
+                      name: 'Generate testrunid if not provided'
+                      steps:
+                        - setPipelineVariable:
+                            name: testrunid
+                            value: '${currentBuildTime("yyyy-MM-dd_HH-mm-ss-SSS")}'
+                        - shell: 'echo "Job Triggered with RUN ID ${env.testrunid}"'
+            - script:
+                name: 'Handle tag'
+                steps:
+                  - if:
+                      condition: "${env.tag}"
+                      steps:
+                        - shell: 'echo "Job Triggered with Tag ${env.tag}"'
+                        - setPipelineVariable:
+                            name: reportPath
+                            value: "testResult/Test_Results_${env.tag}.html"
+                      else:
+                        - setPipelineVariable:
+                            name: tag
+                            value: "${DEFAULT_TAG}"
+                        - shell: 'echo "Job Triggered with Default Tag ${env.tag}"'
+                        - setPipelineVariable:
+                            name: reportPath
+                            value: "testResult/Test_Results_${env.tag}.html"
+      - script:
+          name: 'Run Maven commands'
+          steps:
+            - shell: 'mvn clean'
+            - shell: 'mvn -f ./pom.xml test -Dislocalrun="false" -Dsurefire.suiteXmlFiles="./${env.tag}.xml" -DrunId=${env.testrunid}'
+      - flow:
+          name: 'publishReport'
