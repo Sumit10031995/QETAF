@@ -1,98 +1,107 @@
-tools:
-  maven: '3.6.0'
-  jdk:
-    name: 'Azul JDK 11'
+pipeline {
+  agent any
 
-parameters:
-  - name: tag
-    type: string
-  - name: testrunid
-    type: string
-  - name: reportPath
-    type: string
+  tools {
+    // Define Maven and JDK tools
+    maven '3.6.0'
+    jdk 'Azul JDK 11'
+  }
 
-env:
-  global:
-    variables:
-      reportUrl: "---URL---"
-      buildUrl: "http://localhost:8080/job/APIAutomation/"
-      REPOSITORY_URL: "https://github.com/Sumit10031995/APIFramework.git"
-      appName: "QE_FRAMEWORK"
-      DEFAULT_TAG: 'APITesting'
-      testEnvironment: "${TestEnvironment}"
-      buildLink: "${buildUrl}/${BUILD_NUMBER}"
-      extentReportLink: "${reportUrl}/${JOB_NAME}/${BUILD_NUMBER}/${reportPath}"
-      branchName: "${TRIGGER_BRANCH}"
-      tagName: "${tag}"
+  parameters {
+    // Define pipeline parameters
+    string(name: 'tag', defaultValue: '', description: 'Specify the tag for the job')
+    string(name: 'testrunid', defaultValue: '', description: 'Specify the test run ID (optional)')
+    string(name: 'reportPath', defaultValue: '', description: 'Specify the path for test report')
+  }
 
-triggers:
-  push:
-    branches:
-      ignore:
-        - '*'
-  cron:
-    - cron: '30 18 * * *'  # every day 7:30 AM IST
+  environment {
+    // Define environment variables
+    REPORT_URL = "---URL---"
+    BUILD_URL = "http://localhost:8080/job/APIAutomation/"
+    REPOSITORY_URL = "https://github.com/Sumit10031995/APIFramework.git"
+    APP_NAME = "QE_FRAMEWORK"
+    DEFAULT_TAG = 'APITesting'
+    TEST_ENVIRONMENT = "${TestEnvironment}"
+    BUILD_LINK = "${BUILD_URL}/${BUILD_NUMBER}"
+    EXTENT_REPORT_LINK = "${REPORT_URL}/${JOB_NAME}/${BUILD_NUMBER}/${env.reportPath}"
+    BRANCH_NAME = "${TRIGGER_BRANCH}"
+    TAG_NAME = "${params.tag}"
+  }
 
-jobs:
-  flows:
-    default:
-      - flow:
-          name: 'multiFlows'
+  triggers {
+    // Define triggers for the pipeline
+    cron('30 18 * * *')  // Run daily at 7:30 AM IST
+  }
 
-    APITesting:
-      - script:
-          name: 'Set APITesting tag'
-          steps:
-            - setPipelineVariable:
-                name: tag
-                value: 'APITesting'
-            - flow:
-                name: 'multiFlows'
+  stages {
+    stage('Setup') {
+      steps {
+        script {
+          echo "Versions of tools.."
+          sh 'java -version'
+          sh 'mvn -v'
+        }
+      }
+    }
 
-    multiFlows:
-      - script:
-          name: 'Version of tools'
-          steps:
-            - shell: 'echo "Versions of tools.."'
-            - shell: 'java -version'
-            - shell: 'mvn -v'
-      - script:
-          name: 'Handle testrunid'
-          steps:
-            - if:
-                condition: "${env.testrunid}"
-                steps:
-                  - shell: 'echo "Job Triggered with RUN ID ${env.testrunid}"'
-                else:
-                  - script:
-                      name: 'Generate testrunid if not provided'
-                      steps:
-                        - setPipelineVariable:
-                            name: testrunid
-                            value: '${currentBuildTime("yyyy-MM-dd_HH-mm-ss-SSS")}'
-                        - shell: 'echo "Job Triggered with RUN ID ${env.testrunid}"'
-            - script:
-                name: 'Handle tag'
-                steps:
-                  - if:
-                      condition: "${env.tag}"
-                      steps:
-                        - shell: 'echo "Job Triggered with Tag ${env.tag}"'
-                        - setPipelineVariable:
-                            name: reportPath
-                            value: "testResult/Test_Results_${env.tag}.html"
-                      else:
-                        - setPipelineVariable:
-                            name: tag
-                            value: "${DEFAULT_TAG}"
-                        - shell: 'echo "Job Triggered with Default Tag ${env.tag}"'
-                        - setPipelineVariable:
-                            name: reportPath
-                            value: "testResult/Test_Results_${env.tag}.html"
-      - script:
-          name: 'Run Maven commands'
-          steps:
-            - shell: 'mvn clean'
-            - shell: 'mvn -f ./pom.xml test -Dislocalrun="false" -Dsurefire.suiteXmlFiles="./${env.tag}.xml" -DrunId=${env.testrunid}'
-      - flow:
-          name: 'publishReport'
+    stage('Handle testrunid') {
+      steps {
+        script {
+          if (env.testrunid) {
+            echo "Job Triggered with RUN ID ${env.testrunid}"
+          } else {
+            testrunid = currentBuildTime('yyyy-MM-dd_HH-mm-ss-SSS')
+            echo "Job Triggered with RUN ID ${env.testrunid}"
+          }
+        }
+      }
+    }
+
+    stage('Handle tag') {
+      steps {
+        script {
+          if (env.tag) {
+            echo "Job Triggered with Tag ${env.tag}"
+            reportPath = "testResult/Test_Results_${env.tag}.html"
+          } else {
+            tag = DEFAULT_TAG
+            echo "Job Triggered with Default Tag ${env.tag}"
+            reportPath = "testResult/Test_Results_${env.tag}.html"
+          }
+        }
+      }
+    }
+
+    stage('Run Maven commands') {
+      steps {
+        script {
+          sh 'mvn clean'
+          sh 'mvn -f ./pom.xml test -Dislocalrun=false -Dsurefire.suiteXmlFiles="./${env.tag}.xml" -DrunId=${env.testrunid}'
+        }
+      }
+    }
+
+    stage('Publish Reports') {
+      steps {
+        script {
+          echo "Publishing test reports..."
+          // Additional steps for publishing reports
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      script {
+        echo "Pipeline completed."
+      }
+    }
+
+    failure {
+      script {
+        echo "Pipeline failed! Check logs for details."
+      }
+    }
+  }
+}
