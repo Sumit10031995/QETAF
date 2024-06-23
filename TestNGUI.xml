@@ -1,0 +1,27 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="UITesting" parallel="tests" thread-count="10" configfailurepolicy="continue">
+
+	<parameter name="Env_Name" value="stage" />
+	<parameter name="RETRY_FAILED_TESTS" value="false" />
+	<parameter name="MAX_RETRY_COUNT" value="2" />
+	<parameter name="REPORT_RETRY_TESTS" value="true" />
+	<parameter name="TRIGGER_MAIL" value="false" />
+	<parameter name="DEEP_REPORTING" value="true" />
+	<parameter name="BROWSER" value="chrome" />
+
+	<listeners>
+		<listener class-name="com.qe.retry.RetryListener" />
+	</listeners>
+
+	<test name="Tests1">
+		<groups>
+			<run>
+				<include name="UI"></include>
+				<exclude name="WIP"></exclude>
+			</run>
+		</groups>
+		<packages>
+			<package name="com.qe.ui.test"></package>
+		</packages>
+	</test>
+</suite>

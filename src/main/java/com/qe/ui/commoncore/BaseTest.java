@@ -9,7 +9,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.ITestContext;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
@@ -19,9 +21,11 @@ import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
 import com.qe.commoncore.utils.FileUtil;
 import com.qe.commoncore.utils.ReportingUtil;
+import com.qe.commoncore.utils.TestDataUtil;
+import com.qe.commoncore.utils.TestSetupUtils;
 
 @Listeners(com.qe.ui.commoncore.TestListener.class)
-public class BaseTest {
+public class BaseTest implements BrowserDriver{
 	private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
 	protected static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 	private static final String uiConfigProperty = "uiConfig.properties";
@@ -53,8 +57,8 @@ public class BaseTest {
 	 * @throws Exception this method is use to lunch a browser
 	 */
 	@BeforeMethod(alwaysRun = true)
-	protected void lunchBrowser() throws Exception {
-		System.setProperty("webdriver.http.factory", "jdk-http-client");
+	protected void lunchBrowser(ITestResult testResult, Object[] testDataRow) throws Exception {
+		//System.setProperty("webdriver.http.factory", "jdk-http-client");
 		String browser = Configurator.getInstance().getParameter(ContextConstant.BROWSER);
 
 		if (browser.toLowerCase().contains("chrome")) {
@@ -70,14 +74,17 @@ public class BaseTest {
 		getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		getDriver().get(FileUtil.getPropertyDetails(uiConfigProperty, "com.qe.ui.app.url"));
 		getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-
-	}
+		
+    	TestDataUtil.setTestDataMapWithHeaders(testDataRow);
+    	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult);
+    	System.out.println("Starting test:" + testResult.getMethod().getMethodName());	}
 
 	/**
 	 * 
 	 * @return this method use to get driver object
 	 */
-	public static WebDriver getDriver() {
+	@Override
+	public WebDriver getDriver() {
 		return tlDriver.get();
 	}
 
@@ -85,15 +92,30 @@ public class BaseTest {
 	 * this method use to quit the browser
 	 */
 	@AfterMethod(alwaysRun = true)
-	protected static void quitQuit() {
+	protected void quitQuit(ITestResult testResult) {
 		getDriver().quit();
-		logger.info("Browser closed successfully");
+        Class classDetails = testResult.getMethod().getRealClass();
+        String className = testResult.getName();
+        String methodName = testResult.getMethod().getMethodName();
+//        Class<?>[] parameters = testResult.getMethod().getConstructorOrMethod().getParameterTypes();
+//        Jira jiraDetails = classDetails.getMethod(className, parameters).getAnnotation(Jira.class);
+//                   
+		TestDataUtil.testDataMapWithHeaders.set(null);
+        System.out.println("Ending test:" + methodName);
 
 	}
 
-//	public <T> T initializeElements(Class<T> pageObjectClass) {
-//		T page = PageFactory.initElements(getDriver(), pageObjectClass);
-//		return page;
-//	}
+	/**
+	 * AfterSuite runs after all the test executions.
+	 *
+	 * @param context ITestContext is test result data provided by testng.
+	 */
+	@AfterSuite(alwaysRun = true)
+	public void afterSuite(ITestContext context) {
+        reporter.extent.flush();
+        //send mail
+        //if(Boolean.parseBoolean(configurator.getParameter(ContextConstant.TRIGGER_MAIL)))
+        //new EmailUtil().sendMail();
+	}
 
 }

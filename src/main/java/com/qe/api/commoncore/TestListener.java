@@ -4,9 +4,9 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 import com.aventstack.extentreports.Status;
+import com.qe.commoncore.utils.TestSetupUtils;
 
 public class TestListener implements ITestListener{
-	BaseTest baseTest=new BaseTest();
 	@Override
 	public void onTestSkipped(ITestResult testResult) {
 		try {
@@ -14,7 +14,7 @@ public class TestListener implements ITestListener{
 			//This mechanism helps to identify retry skipped method details. 
 			//If test is skipped due to a retry action then we are not logging those details to extent report
 			if(!testResult.wasRetried()) {
-				baseTest.fetchJiraDetailsAndAddToReport(testResult);
+				TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult);
 				BaseTest.reporter.createTestStep(testResult.getMethod().getMethodName());
 				BaseTest.reporter.logTestStepDetails(Status.SKIP, testResult.getThrowable().getMessage());
 			}
