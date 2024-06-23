@@ -45,9 +45,9 @@ public class FileUtil {
         }
     }
     
-    public static String readFile(String fileName) {
+    public static String readFile(String filePath) {
         String fileContent = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(FileUtil.class.getClassLoader().getResource(fileName).getFile()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             fileContent = reader.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,8 +73,8 @@ public class FileUtil {
      * @return true if the file size is within the limit, false otherwise
      * @throws IOException if an I/O error occurs
      */
-    public static boolean isFileSizeValid(String fileName, long maxSize) throws IOException{
-        Path path = Paths.get(FileUtil.class.getClassLoader().getResource(fileName).getFile());
+    public static boolean isFileSizeValid(String filePath, long maxSize) throws IOException{
+        Path path = Paths.get(filePath);
         long fileSize = Files.size(path);
         return fileSize <= maxSize;
     }
