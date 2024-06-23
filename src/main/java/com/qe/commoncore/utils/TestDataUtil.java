@@ -1,24 +1,14 @@
 package com.qe.commoncore.utils;
 
-import com.aventstack.extentreports.Status;
-import com.fasterxml.jackson.databind.MappingIterator;
-
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
-import com.opencsv.exceptions.CsvException;
-import com.qe.api.commoncore.BaseTest;
-
-import org.apache.commons.lang3.StringUtils;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.opencsv.CSVReader;
 
 public class TestDataUtil {
 	
