@@ -148,6 +148,11 @@ public class Configurator {
 		parameterMap.put(ContextConstant.BROWSER,
 				params.containsKey(ContextConstant.BROWSER) ? params.get(ContextConstant.BROWSER)
 									: "chrome");
+		
+		// browser
+				parameterMap.put(ContextConstant.ENABLE_HEADLESS_MODE,
+						params.containsKey(ContextConstant.ENABLE_HEADLESS_MODE) ? params.get(ContextConstant.ENABLE_HEADLESS_MODE)
+											: "false");
 			
 		// Add rest of the custom parameters in map
 		for (Entry<String, String> e : params.entrySet()) {

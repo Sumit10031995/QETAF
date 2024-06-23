@@ -45,7 +45,10 @@ public class ContextConstant {
 	//mail send to
 	public static final String MAIL_TO = "MAIL_TO";
 	
-	//browser send to
+	//browser
 	public static final String BROWSER = "BROWSER";
+	
+	//ENABLE_HEADLESS_MODE
+	public static final String ENABLE_HEADLESS_MODE = "ENABLE_HEADLESS_MODE";
 
 }

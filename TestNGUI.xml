@@ -8,6 +8,7 @@
 	<parameter name="TRIGGER_MAIL" value="false" />
 	<parameter name="DEEP_REPORTING" value="true" />
 	<parameter name="BROWSER" value="chrome" />
+	<parameter name="ENABLE_HEADLESS_MODE" value="false" />
 
 	<listeners>
 		<listener class-name="com.qe.retry.RetryListener" />
@@ -21,7 +22,7 @@
 			</run>
 		</groups>
 		<packages>
-			<package name="com.qe.ui.test"></package>
+			<package name="com.qe.ui.tests"></package>
 		</packages>
 	</test>
 </suite>

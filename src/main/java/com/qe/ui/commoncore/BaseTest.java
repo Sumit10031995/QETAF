@@ -63,6 +63,9 @@ public class BaseTest implements BrowserDriver{
 
 		if (browser.toLowerCase().contains("chrome")) {
 			ChromeOptions co = new ChromeOptions();
+			if(Boolean.parseBoolean(Configurator.getInstance().getParameter(ContextConstant.ENABLE_HEADLESS_MODE))) {
+			co.setHeadless(true);
+			}
 			tlDriver.set(new ChromeDriver(co));
 		} else if (browser.toLowerCase().contains("firefox")) {
 			tlDriver.set(new FirefoxDriver());
