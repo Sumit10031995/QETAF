@@ -16,6 +16,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
+import com.aventstack.extentreports.Status;
 import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
@@ -70,17 +71,19 @@ public class BaseTest implements BrowserDriver{
 		} else if (browser.toLowerCase().contains("firefox")) {
 			tlDriver.set(new FirefoxDriver());
 		} else {
+			reporter.logTestStepDetails(Status.FAIL,"Invalid browser name");
 			throw new Exception("Invalid browser name");
 		}
 		getDriver().manage().window().maximize();
-		getDriver().manage().deleteAllCookies();
+		//getDriver().manage().deleteAllCookies();
 		getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		getDriver().get(FileUtil.getPropertyDetails(uiConfigProperty, "com.qe.ui.app.url"));
 		getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		
     	TestDataUtil.setTestDataMapWithHeaders(testDataRow);
     	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult);
-    	System.out.println("Starting test:" + testResult.getMethod().getMethodName());	}
+    	System.out.println("Starting test:" + testResult.getMethod().getMethodName());	
+    	}
 
 	/**
 	 * 

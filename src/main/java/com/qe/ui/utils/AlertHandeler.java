@@ -3,24 +3,40 @@ package com.qe.ui.utils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 
-public class AlertHandeler {
+public abstract class AlertHandeler extends WaitUtils {
 
-	public static void acceptAlert(WebDriver driver) {
-		Alert alert = switchToAlert(driver);
+	private Alert alert;
+	private final WebDriver driver;
+
+
+	// immetuable object
+	AlertHandeler(WebDriver driver) {
+		super(driver);
+        this.driver= driver;
+	}
+
+	@Override
+	public void acceptAlert(WebDriver driver) {
+		this.alert = driver.switchTo().alert();
 		alert.accept();
 	}
 
-	public static void dismissAlert(WebDriver driver) {
-		Alert alert = switchToAlert(driver);
+	@Override
+	public void dismissAlert(WebDriver driver) {
+		this.alert = driver.switchTo().alert();
 		alert.dismiss();
 	}
 
-	public static String getAlertText(WebDriver driver) {
-		Alert alert = switchToAlert(driver);
+	@Override
+	public String getAlertText(WebDriver driver) {
+		this.alert = driver.switchTo().alert();
 		return alert.getText();
 	}
 
-	private static Alert switchToAlert(WebDriver driver) {
-		return driver.switchTo().alert();
+	@Override
+	public void sendKeysToAlert(String keysToSend) {
+		this.alert = driver.switchTo().alert();
+		alert.sendKeys(keysToSend);
 	}
+
 }

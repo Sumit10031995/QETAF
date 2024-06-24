@@ -4,17 +4,18 @@ import org.testng.annotations.Test;
 
 import com.qe.ui.constants.WalmartHomePageConstants;
 import com.qe.ui.page.WalmartHomePageElements;
+import com.qe.ui.utils.UIUtility;
 import com.qe.ui.utils.WaitUtils;
 import com.qe.ui.utils.XpathsUtils;
 
 public class WalmartHomePageTest extends WalmartHomePageElements {
 	
-
 	@Test(groups = { "HomePage", "UI" })
 	public void homePageValidation() throws Exception {
-		WaitUtils.visibilityOf(getDriver(), XpathsUtils.generateXPathEqualsForVisibleText(WalmartHomePageConstants.dealsText,
+		UIUtility uiUtility=new UIUtility(getDriver());
+		
+		uiUtility.visibilityOf(XpathsUtils.generateXPathEqualsForVisibleText(WalmartHomePageConstants.dealsText,
 				WalmartHomePageConstants.dealsText));
-
 		reporter.createTestStep("Validate Walmart Home Page Elements");
 		assertion.assertEquals(getDeals().getText(), WalmartHomePageConstants.dealsText,
 				"Validate Text '" + WalmartHomePageConstants.dealsText + "'", true);

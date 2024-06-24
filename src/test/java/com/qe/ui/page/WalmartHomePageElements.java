@@ -5,10 +5,11 @@ import org.openqa.selenium.WebElement;
 import com.qe.ui.commoncore.BaseTest;
 import com.qe.ui.constants.WalmartCommonTags;
 import com.qe.ui.constants.WalmartHomePageConstants;
+import com.qe.ui.utils.UIUtility;
 import com.qe.ui.utils.XpathsUtils;
 
 public class WalmartHomePageElements extends BaseTest {
-
+	
 	public WebElement getDeals() {
 		return (getDriver().findElement(XpathsUtils.generateXPathEqualsForVisibleText(WalmartCommonTags.aTag,
 				WalmartHomePageConstants.dealsText)));
