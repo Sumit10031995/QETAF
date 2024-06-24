@@ -24,13 +24,14 @@ import com.qe.commoncore.utils.FileUtil;
 import com.qe.commoncore.utils.ReportingUtil;
 import com.qe.commoncore.utils.TestDataUtil;
 import com.qe.commoncore.utils.TestSetupUtils;
+import com.qe.ui.utils.UIUtility;
 
 @Listeners(com.qe.ui.commoncore.TestListener.class)
 public class BaseTest implements BrowserDriver{
 	private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
 	protected static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 	private static final String uiConfigProperty = "uiConfig.properties";
-
+	protected UIUtility uiUtility;
 	
 	// public static CommonConfig config;
 	public static ReportingUtil reporter;
@@ -82,6 +83,7 @@ public class BaseTest implements BrowserDriver{
 		
     	TestDataUtil.setTestDataMapWithHeaders(testDataRow);
     	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult);
+		this.uiUtility=new UIUtility(tlDriver.get());
     	System.out.println("Starting test:" + testResult.getMethod().getMethodName());	
     	}
 

@@ -11,9 +11,7 @@ import com.qe.ui.utils.XpathsUtils;
 public class WalmartHomePageTest extends WalmartHomePageElements {
 	
 	@Test(groups = { "HomePage", "UI" })
-	public void homePageValidation() throws Exception {
-		UIUtility uiUtility=new UIUtility(getDriver());
-		
+	public void homePageValidation() throws Exception {		
 		uiUtility.visibilityOf(XpathsUtils.generateXPathEqualsForVisibleText(WalmartHomePageConstants.dealsText,
 				WalmartHomePageConstants.dealsText));
 		reporter.createTestStep("Validate Walmart Home Page Elements");
