@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 import com.qe.api.commoncore.BaseTest;
 import com.qe.api.helper.GetRequestHelper;
 import com.qe.apicore.impl.APIResponse;
+import com.qe.commoncore.annotations.Jira;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -13,6 +14,7 @@ public class GETAPITesting extends BaseTest{
 	GetRequestHelper getRequestHelper=new GetRequestHelper();
 	
 	//url=https://jsonplaceholder.typicode.com/posts
+	@Jira(jiraTestKey = "TEST-123")
 	@Test(groups = {"GET","API"})
 	public void getAPITesting() throws Exception {
 	 reporter.createTestStep("Do GET API call and verify HTTP response code");

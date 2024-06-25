@@ -67,7 +67,7 @@ public class JavaUtils {
 	  	if(jiraKey.isEmpty() || jiraKey == null) {
 	  		return null;
 	  	}else {
-	  		return "<a href = 'https://jira.walmart.com/browse/"+jiraKey+"'>"+jiraKey+"</a>";	
+	  		return "<a href = 'https://jira.qe.com/browse/"+jiraKey+"'>"+jiraKey+"</a>";	
 	  	}
 	
 	  }

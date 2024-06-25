@@ -1,11 +1,7 @@
 package com.qe.api.commoncore;
 
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -14,15 +10,11 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
-import com.qe.commoncore.annotations.Jira;
 import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
-import com.qe.commoncore.utils.JavaUtils;
 import com.qe.commoncore.utils.ReportingUtil;
 import com.qe.commoncore.utils.TestDataUtil;
 import com.qe.commoncore.utils.TestSetupUtils;
-import com.qe.retry.Retry;
-import com.qe.retry.RetryListener;
 
 @Listeners({ com.qe.api.commoncore.TestListener.class })
 public class BaseTest {

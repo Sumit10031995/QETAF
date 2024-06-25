@@ -83,7 +83,7 @@ public class BaseTest implements BrowserDriver{
 		
     	TestDataUtil.setTestDataMapWithHeaders(testDataRow);
     	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult);
-		this.uiUtility=new UIUtility(tlDriver.get());
+		this.uiUtility=new UIUtility(getDriver());
     	System.out.println("Starting test:" + testResult.getMethod().getMethodName());	
     	}
 

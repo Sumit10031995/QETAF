@@ -5,11 +5,13 @@ import org.testng.annotations.Test;
 import com.qe.api.commoncore.BaseTest;
 import com.qe.api.helper.POSTRequestHelper;
 import com.qe.apicore.impl.APIResponse;
+import com.qe.commoncore.annotations.Jira;
 
 public class POSTAPITesting extends BaseTest{
 	POSTRequestHelper postRequestHelper=new POSTRequestHelper();
 	
 	// https://jsonplaceholder.typicode.com/posts
+	@Jira(jiraTestKey = "TEST-123")
 	@Test(groups = {"GET","API"})
 	public void doPostRequest() throws Exception {
         String testDataID="1";

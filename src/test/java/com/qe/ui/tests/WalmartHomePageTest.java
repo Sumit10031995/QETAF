@@ -2,14 +2,14 @@ package com.qe.ui.tests;
 
 import org.testng.annotations.Test;
 
+import com.qe.commoncore.annotations.Jira;
 import com.qe.ui.constants.WalmartHomePageConstants;
 import com.qe.ui.page.WalmartHomePageElements;
-import com.qe.ui.utils.UIUtility;
-import com.qe.ui.utils.WaitUtils;
 import com.qe.ui.utils.XpathsUtils;
 
 public class WalmartHomePageTest extends WalmartHomePageElements {
 	
+	@Jira(jiraTestKey = "TEST-123")
 	@Test(groups = { "HomePage", "UI" })
 	public void homePageValidation() throws Exception {		
 		uiUtility.visibilityOf(XpathsUtils.generateXPathEqualsForVisibleText(WalmartHomePageConstants.dealsText,
