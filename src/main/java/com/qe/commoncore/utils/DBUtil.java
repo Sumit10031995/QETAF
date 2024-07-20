@@ -26,6 +26,7 @@ public class DBUtil {
 	private static final String AZURE_DB_USER_NAME="azure.db.user.name";
 	private static final String AZURE_DB_PASSWORD="azure.db-password";
 	
+	private final String DB;
     private final String driver;
     private final String url;
     private final String user;
@@ -35,6 +36,7 @@ public class DBUtil {
 	// This DBUtils object is currently immutable. 
 	// We parameterize it to allow changing the connection if required.
     public DBUtil(String DBType) {
+    	this.DB=DBType;
     	
 		switch (DBType) {
 		case "SQL_DB":
@@ -59,7 +61,7 @@ public class DBUtil {
 	 * getDbConnection method creates a connection to DB. It also throws an
 	 * exception when the connection is not successful.
 	 */
-	private Connection getDbConnection(String DB) throws Throwable {
+	private Connection getDbConnection() throws Throwable {
 		Connection connection = null;
 		Class.forName(this.driver);
 		try {
@@ -76,15 +78,15 @@ public class DBUtil {
 	 * result set. 3. The Return type of this method is String. 4. Returns NULL when
 	 * there is no data retrieved.
 	 */
-	public Object returnDBValue(String DB, String query) throws Throwable {
+	public static Object returnDBValue(String DB, String query) throws Throwable {
 		Statement stmt = null;
 		PreparedStatement prepStmt = null;
 		ResultSet rs = null;
 		Object value = null;
 		int rowCounter = 0;
-
-		Connection con = getDbConnection(DB);
-		try {
+		DBUtil dbUtils=new DBUtil(DB);
+		
+		try (Connection con = dbUtils.getDbConnection()){
 			long startTime = System.currentTimeMillis();
 			prepStmt = con.prepareStatement(query);
 			rs = prepStmt.executeQuery();
@@ -95,7 +97,7 @@ public class DBUtil {
 				value = rs.getObject(1);
 			}
 
-			String queryDetails = getQueryDetails(query, (value == null) ? "" : value.toString(), startTime, endTime);
+			String queryDetails =dbUtils.getQueryDetails(query, (value == null) ? "" : value.toString(), startTime, endTime);
 			BaseTest.reporter.logTestStepDetails(Status.INFO, "<pre>" + queryDetails + "</pre>");
 
 			if (rowCounter == 0) {
@@ -107,8 +109,6 @@ public class DBUtil {
 			}
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			con.close();
 		}
 	}
 
@@ -118,16 +118,16 @@ public class DBUtil {
 	 * result set. 3. The Return type of this method is List<String>. 4. Returns
 	 * NULL when there is no data retrieved.
 	 */
-	public List<Object> returnListOfDBValues(String DB, String query) throws Throwable {
+	public static  List<Object> returnListOfDBValues(String DB, String query) throws Throwable {
 		List<Object> DBvalues = new ArrayList<Object>();
 		Statement stmt = null;
 		PreparedStatement prepStmt = null;
 		ResultSet rs = null;
 		Object value = null;
 		int rowCounter = 0;
-
-		Connection con = getDbConnection(DB);
-		try {
+		
+		DBUtil dbUtils=new DBUtil(DB);
+		try(Connection con = dbUtils.getDbConnection()) {
 			long startTime = System.currentTimeMillis();
 			prepStmt = con.prepareStatement(query);
 			rs = prepStmt.executeQuery();
@@ -139,7 +139,7 @@ public class DBUtil {
 				DBvalues.add(value);
 			}
 
-			String queryDetails = getQueryDetails(query, DBvalues.toString(), startTime, endTime);
+			String queryDetails = dbUtils.getQueryDetails(query, DBvalues.toString(), startTime, endTime);
 			BaseTest.reporter.logTestStepDetails(Status.INFO, "<pre>" + queryDetails + "</pre>");
 
 			if (rowCounter == 0) {
@@ -151,8 +151,6 @@ public class DBUtil {
 			}
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			con.close();
 		}
 
 	}
@@ -175,8 +173,8 @@ public class DBUtil {
 		Object value = null;
 		int rowCounter = 0;
 
-		Connection con = getDbConnection(DB);
-		try {
+		DBUtil dbUtils=new DBUtil(DB);
+		try(Connection con = dbUtils.getDbConnection()) {
 			long startTime = System.currentTimeMillis();
 			prepStmt = con.prepareStatement(query);
 			rs = prepStmt.executeQuery();
@@ -206,9 +204,7 @@ public class DBUtil {
 			}
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			con.close();
-		}
+		} 
 	}
 
 	/*
@@ -222,8 +218,8 @@ public class DBUtil {
 		Object value = null;
 		int rowCounter = 0;
 
-		Connection con = getDbConnection(DB);
-		try {
+		DBUtil dbUtils=new DBUtil(DB);
+		try(Connection con = dbUtils.getDbConnection()) {
 			long startTime = System.currentTimeMillis();
 			prepStmt = con.prepareStatement(query);
 			rowCounter = prepStmt.executeUpdate();
@@ -236,9 +232,7 @@ public class DBUtil {
 			return "Total rows affected:" + rowCounter;
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			con.close();
-		}
+		} 
 	}
 
 	/**
