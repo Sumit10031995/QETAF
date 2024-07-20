@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aventstack.extentreports.Status;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
 import com.qe.api.commoncore.Configurator;
 import com.qe.api.enums.HttpRestMethod;
 import com.qe.api.enums.RestContentType;
@@ -18,9 +16,13 @@ import com.qe.commoncore.utils.ReportingUtil;
 
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
+import io.restassured.config.LogConfig;
 import io.restassured.config.RestAssuredConfig;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.path.json.JsonPath;
+import io.restassured.specification.QueryableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
-
+import io.restassured.specification.SpecificationQuerier;
 
 /**
  * This class is a wrapper over rest-assured and having functions to hit an API request.
@@ -40,16 +42,15 @@ public class ApiDriver {
 	private Map<String, Object> multiParts = new HashMap<>();
     ReportingUtil reporter = ReportingUtil.getInstance();
 
-
 	public ApiDriver(String apiHost, String endPoint) {
-		//this.setConfigTimeOut();
+		this.setRequestConfig();
 		this.apiHost = apiHost;
 		this.endPoint = endPoint;
 		this.requestContentType = RestContentType.JSON;
 	}
 
 	public ApiDriver(String apiHost, String endPoint, Map<String, Object> headers) {
-		//this.setConfigTimeOut();
+		this.setRequestConfig();
 		this.apiHost = apiHost;
 		this.endPoint = endPoint;
 		this.requestHeaders = headers;
@@ -57,6 +58,7 @@ public class ApiDriver {
 	}
 
 	private RequestSpecification init() {
+		JsonPath path=new JsonPath("{}");
 		this.requestSpecification = RestAssured.given();
 		this.requestSpecification.baseUri(apiHost);
 		this.endPoint = EndPointManager.reformatEndPoint(this.endPoint);
@@ -76,7 +78,7 @@ public class ApiDriver {
 		return requestSpecification;
 	}
 
-	public APIResponse POST() {
+	public APIResponse POST() throws Exception {
 		APIResponse apiResponse = new APIResponse();
 		RequestSpecification requestSpecification = init();
 		requestSpecification.headers(requestHeaders);
@@ -109,6 +111,7 @@ public class ApiDriver {
 			}
 			reporter.logTestStepDetails(Status.INFO, getAPIDetails(HttpRestMethod.POST,apiResponse));
 		}
+		//Catch all but actually created to catch API time-out from client side. 
 		catch (Exception e) {
 			reporter.logTestStepDetails(Status.FAIL,
 					"POST Request is having some issue :- " + e.getMessage().toString());
@@ -124,6 +127,7 @@ public class ApiDriver {
 		if (reporter.extentTestSteps.get() == null) {
 			reporter.createTestStep("GET : "+this.endPoint);
 		}
+		this.requestBody = "{}";
 		try {
 			if (this.endPoint != null && !this.endPoint.equals("")) {
 				apiResponse.response = requestSpecification.get(endPoint);
@@ -146,7 +150,10 @@ public class ApiDriver {
 		requestSpecification.headers(requestHeaders);
 		if (this.requestBody != null && !this.requestBody.equals("")) {
 			requestSpecification.body(this.requestBody);
+		}else {
+			this.requestBody = "{}";	
 		}
+		
 		if (reporter.extentTestSteps.get() == null) {
 			reporter.createTestStep("PUT:"+this.endPoint);
 		}
@@ -200,6 +207,8 @@ public class ApiDriver {
 		requestSpecification.headers(requestHeaders);
 		if (this.requestBody != null && !this.requestBody.equals("")) {
 			requestSpecification.body(this.requestBody);
+		}else {
+			this.requestBody = "{}";	
 		}
 		if (reporter.extentTestSteps.get() == null) {
 			reporter.createTestStep("DELETE:"+this.endPoint);
@@ -233,7 +242,10 @@ public class ApiDriver {
 		requestSpecification.headers(requestHeaders);
 		if (this.requestBody != null && !this.requestBody.equals("")) {
 			requestSpecification.body(this.requestBody);
+		}else {
+			this.requestBody = "{}";	
 		}
+		
 		if (reporter.extentTestSteps.get() == null) {
 			reporter.createTestStep("PATCH:"+this.endPoint);
 		}
@@ -347,7 +359,9 @@ public class ApiDriver {
 	/**
 	 * This method is required to configure RestAssured Timeout 
 	 */
-	private void setConfigTimeOut() {
+	private void setRequestConfig() {
+		
+		//socket timeout config
 		int timeOut = Integer.valueOf(Configurator.getInstance().getParameter(ContextConstant.API_TIMEOUT_MS));
 		HttpClientConfig httpClientConfig = HttpClientConfig.httpClientConfig().setParam("http.socket.timeout", timeOut)
 				.setParam("http.connection.timeout", timeOut);
@@ -364,16 +378,11 @@ public class ApiDriver {
 	 * @param apiResponse
 	 * @return String
 	 *    This method is use to encapsulate all API's request/response details within HTML tags for inclusion in Extent Report.
+	 * @throws Exception 
 	 */
-	private String getAPIDetails(HttpRestMethod httpMethod,APIResponse apiResponse) {
-		//print API URL
-		System.out.println("̄API:"+ httpMethod+ "--"+ this.apiHost+ this.getendPoint());
-		//Print Request body
-		if(!httpMethod.toString().equals("GET")) {
-			System.out.println("Request Body :");
-			System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(this.requestBody.toString())));
-			System.out.println("Response Body :");
-		}
+	private String getAPIDetails(HttpRestMethod httpMethod,APIResponse apiResponse) throws Exception {
+	
+		System.out.println(this.getCurl());
 		// If Deep Reporting value is true, print request and response details to ExtentReport(Request URL,Request Header,Request Body,Response Header,Response Body). Otherwise, only add request details to the ExtentReport(Request URL,Request Header).
 		boolean isDeepReporting=Boolean.parseBoolean(Configurator.getInstance().getParameter(ContextConstant.DEEP_REPORTING));
 		String apiSpecification = "<pre>"
@@ -384,17 +393,31 @@ public class ApiDriver {
 				+ "PathParameters:"+ this.getPathParams().toString();
 		if(isDeepReporting) {
 			apiSpecification=apiSpecification
-					+JavaUtils.getAsHTML("Request Body : ",(this.requestBody==null)?"{}":JsonUtil.prettyPrint((this.requestBody.toString().contains("<a href="))?this.requestBody.toString().replace("a href=", ""):this.requestBody.toString()))+ "<br>"	
+					+JavaUtils.getAsHTML("Request Body : ",JsonUtil.prettyPrint((this.requestBody.toString().contains("<a href="))?this.requestBody.toString().replace("a href=", ""):this.requestBody.toString()))+ "<br>"	
 					+ "</pre><pre>Response Details"+ "<br>"
 					+ JavaUtils.getAsHTML("Response Headers : ",apiResponse.response.headers().toString())+ "<br>"
 					+ JavaUtils.getAsHTML("Response Body : ",apiResponse.PrettyPrint().toString());
 		}
 		apiSpecification=apiSpecification+"</pre>";
-		// Print response body in IDE console if deep reporting is false.
-		if(!isDeepReporting) {
-			apiResponse.PrettyPrint().toString();
-		}
 		return apiSpecification;
+	}
+	
+	private String getCurl() throws Exception {
+		try {
+			QueryableRequestSpecification requestSpec = SpecificationQuerier.query(requestSpecification);
+			StringBuilder curlCommand = new StringBuilder("curl ");
+			curlCommand.append("'").append(requestSpec.getBaseUri() + this.endPoint).append("' ");
+			curlCommand.append(" -X " + requestSpec.getMethod() + " ");
+			requestSpec.getHeaders().asList().forEach(header -> curlCommand.append("-H '").append(header.getName())
+					.append(": ").append(header.getValue()).append("' "));
+			String requestBody = requestSpec.getBody();
+			if (requestBody != null && !requestBody.isEmpty()) {
+				curlCommand.append("-d '").append(requestBody.replace("'", "\\'")).append("' ");
+			}
+			return curlCommand.toString();
+		} catch (Exception e) {
+			throw new Exception("Unable to build CURL command");
+		}
 	}
   
 }
