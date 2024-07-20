@@ -50,5 +50,9 @@ public class ContextConstant {
 	
 	//ENABLE_HEADLESS_MODE
 	public static final String ENABLE_HEADLESS_MODE = "ENABLE_HEADLESS_MODE";
+	
+	//DATA_PROVIDER_LIMIT
+	public static final String DATA_PROVIDER_LIMIT = "DATA_PROVIDER_LIMIT";
+
 
 }

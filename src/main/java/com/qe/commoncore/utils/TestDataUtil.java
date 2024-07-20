@@ -13,13 +13,7 @@ import com.opencsv.CSVReader;
 public class TestDataUtil {
 	
 	// To store the column header list from the test data CSV file (used only when using data provider).
-	public static ThreadLocal<List<String>> testDataHeader = new ThreadLocal<List<String>>();
-	
-	// To store the list of map where each map is like headerColumn=rowValue (used only when using data provider).
-	public static ThreadLocal<Map<String, String>> testDataMapWithHeaders = new ThreadLocal<Map<String, String>>();
-	
-	// used to store the scenario. Scenario is fetched from scenario column from the 'testDataMapWithHeaders' map.
-    	public static final String scenarioClmName="scenario";
+	public static ThreadLocal<List<String>> testDataHeader = new ThreadLocal<List<String>>();	
 
     private TestDataUtil() {
     }
@@ -226,33 +220,5 @@ public class TestDataUtil {
 			}
 		}
 		return objectArray;
-	}
-    
-	/**
-	 * @param array
-	 * This method is use to create a mapping between test data headers and values when data provider is used.
-	 * @throws Exception 
-	 */
-	public static void setTestDataMapWithHeaders(Object[] testDataRow) throws Exception {
-		
-		//If data provider is not being used 
-    	if(testDataRow.length==0) {
-			return ;
-		}
-		
-		//In-case data provider is used but not constructed using CSV file then testDataHeader list will be null.
-		if(testDataHeader.get()==null) {
-			return;
-		}
-		
-		Map<String, String> map = new HashMap<>();
-		if (testDataRow.length == testDataHeader.get().size()) {
-			for (int i = 0; i < testDataRow.length; i++) {
-				map.put(testDataHeader.get().get(i), testDataRow[i].toString());
-			}
-		}else {
-            System.out.println("The header element count and data provider element count fetched from the CSV file should match. Both should contain the same number of elements");
-		}
-		testDataMapWithHeaders.set(map);
 	}
 }

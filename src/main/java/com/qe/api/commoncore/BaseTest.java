@@ -49,8 +49,7 @@ public class BaseTest {
     @BeforeMethod(alwaysRun = true)
     public void beforeMethod(ITestResult testResult, Object[] testDataRow) throws Exception
     {
-    	TestDataUtil.setTestDataMapWithHeaders(testDataRow);
-    	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult);
+    	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult,testDataRow);
     	System.out.println("Starting test:" + testResult.getMethod().getMethodName());
     }
 	
@@ -68,7 +67,6 @@ public class BaseTest {
 //        Class<?>[] parameters = testResult.getMethod().getConstructorOrMethod().getParameterTypes();
 //        Jira jiraDetails = classDetails.getMethod(className, parameters).getAnnotation(Jira.class);
 //                   
-		TestDataUtil.testDataMapWithHeaders.set(null);
         System.out.println("Ending test:" + methodName);
 	}
 

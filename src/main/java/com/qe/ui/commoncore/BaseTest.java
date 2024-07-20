@@ -81,8 +81,7 @@ public class BaseTest implements BrowserDriver{
 		getDriver().get(FileUtil.getPropertyDetails(uiConfigProperty, "com.qe.ui.app.url"));
 		getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		
-    	TestDataUtil.setTestDataMapWithHeaders(testDataRow);
-    	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult);
+    	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult,testDataRow);
 		this.uiUtility=new UIUtility(getDriver());
     	System.out.println("Starting test:" + testResult.getMethod().getMethodName());	
     	}
@@ -108,7 +107,6 @@ public class BaseTest implements BrowserDriver{
 //        Class<?>[] parameters = testResult.getMethod().getConstructorOrMethod().getParameterTypes();
 //        Jira jiraDetails = classDetails.getMethod(className, parameters).getAnnotation(Jira.class);
 //                   
-		TestDataUtil.testDataMapWithHeaders.set(null);
         System.out.println("Ending test:" + methodName);
 
 	}

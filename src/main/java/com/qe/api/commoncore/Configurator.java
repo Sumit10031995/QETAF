@@ -153,7 +153,11 @@ public class Configurator {
 				parameterMap.put(ContextConstant.ENABLE_HEADLESS_MODE,
 						params.containsKey(ContextConstant.ENABLE_HEADLESS_MODE) ? params.get(ContextConstant.ENABLE_HEADLESS_MODE)
 											: "false");
-			
+		// DATA_PROVIDER_LIMIT
+	   parameterMap.put(ContextConstant.DATA_PROVIDER_LIMIT,
+						params.containsKey(ContextConstant.DATA_PROVIDER_LIMIT) ? params.get(ContextConstant.DATA_PROVIDER_LIMIT)
+											: "1");
+	   
 		// Add rest of the custom parameters in map
 		for (Entry<String, String> e : params.entrySet()) {
 			if (!parameterMap.containsKey(e.getKey())) {
