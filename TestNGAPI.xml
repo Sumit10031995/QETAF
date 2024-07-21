@@ -8,7 +8,7 @@
 	<parameter name="REPORT_RETRY_TESTS" value="true" />
 	<parameter name="TRIGGER_MAIL" value="false" />
 	<parameter name="DEEP_REPORTING" value="true" />
-	<parameter name="DATA_PROVIDER_LIMIT" value="1" />
+	<parameter name="DATA_PROVIDER_LIMIT" value="MAX" />
 
 
 	<listeners>

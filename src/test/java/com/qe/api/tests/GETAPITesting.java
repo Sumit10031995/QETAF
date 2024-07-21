@@ -18,30 +18,26 @@ import io.restassured.response.Response;
 public class GETAPITesting extends BaseTest{
 	
 	GetRequestHelper getRequestHelper=new GetRequestHelper();
-	  @DataProvider(name = "test")
-	    public Object [][] fff() throws Exception{
-		  int dataProviderLimit=Integer.parseInt(configurator.getParameter(ContextConstant.DATA_PROVIDER_LIMIT));
 
-		  Object [][] obj=  TestDataUtil.readDataFromCSV_File("src/test/resources/testData.csv","scenario",Arrays.asList("scenario1","scenario3"));
-	        Object[][] copiedArray = new Object[dataProviderLimit][obj[0].length];
+	@DataProvider(name = "test")
+	public Object[][] fff() throws Exception {
+		String dataProviderLimit = configurator.getParameter(ContextConstant.DATA_PROVIDER_LIMIT);
+		Object[][] obj = TestDataUtil.readDataFromCSV_File("src/test/resources/testData.csv", "scenario",
+				Arrays.asList("scenario1", "scenario3"));
+		
+		int limit = (dataProviderLimit.toLowerCase().equals("max")) ? obj.length - 1
+				: (Integer.parseInt(dataProviderLimit) > obj.length - 1 || Integer.parseInt(dataProviderLimit)<=0) ? obj.length - 1
+						: Integer.parseInt(dataProviderLimit);
 
-	        try {
-	        	 for (int i = 1; i <= dataProviderLimit; i++) {
-	 	        	for (int j = 0; j < obj[i].length; j++) {
-	 	        		copiedArray[i-1][j] =obj[i][j];
-	 		        }
-	 	        }
-	        }catch(Exception e) {
-	        	copiedArray = new Object[obj.length-1][obj[0].length];
-	        for (int i = 1; i < obj.length; i++) {
-	        	for (int j = 0; j < obj[i].length; j++) {
-	        		copiedArray[i-1][j] =obj[i][j];
-		        }
-	        }
-	        }
+		Object[][] copiedArray = new Object[limit][obj[0].length];
 
-		  return copiedArray;
-	    }
+		for (int i = 1; i <= limit; i++) {
+			for (int j = 0; j < obj[i].length; j++) {
+				copiedArray[i - 1][j] = obj[i][j];
+			}
+		}
+		return copiedArray;
+	}
 	  
 	  
 	  
