@@ -2,7 +2,7 @@ package com.qe.ui.utils;
 
 import org.openqa.selenium.By;
 
-public class XpathsUtils {
+public class XpathUtils {
 	
 	public static By generateXPathEqualsForVisibleText(String tagName, String searchText) {
 		String xpath = "//" + tagName + "[text()='" + searchText + "']";

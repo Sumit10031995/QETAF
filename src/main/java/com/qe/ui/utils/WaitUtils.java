@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.aventstack.extentreports.Status;
 import com.qe.commoncore.utils.ReportingUtil;
 
-public abstract class WaitUtils implements BaseFunctions{
+public abstract class WaitUtils{
 	private static final ReportingUtil reporter = ReportingUtil.getInstance();
 	private static final int waitTime = 20;
 	private final WebDriverWait wait;
@@ -22,7 +22,6 @@ public abstract class WaitUtils implements BaseFunctions{
 		this.wait = new WebDriverWait(driver, Duration.ofSeconds(waitTime));
 	}
 
-	@Override
 	public WebElement visibilityOf(By locator) {
 		try {
 			WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
@@ -34,7 +33,6 @@ public abstract class WaitUtils implements BaseFunctions{
 		}
 	}
 
-	@Override
 	public void inVisibilityOf(By locator) {
 		try {
 			wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
@@ -45,7 +43,6 @@ public abstract class WaitUtils implements BaseFunctions{
 		}
 	}
 
-	@Override
 	public WebElement elementToBeClickable(By locator) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(waitTime));
 		try {

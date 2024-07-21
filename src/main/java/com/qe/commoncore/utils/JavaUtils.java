@@ -2,9 +2,11 @@ package com.qe.commoncore.utils;
 
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
@@ -75,6 +77,17 @@ public class JavaUtils {
 	  	}
 	
 	  }
+	  
+	  /**
+	   * @param timeStamp
+	   * @param zone
+	   * @return
+	   * Get local time
+	   */
+	  public static LocalDateTime getLocalTime(String timeStamp,String zone) {
+			Instant instant = Instant.parse(timeStamp);
+	    	return LocalDateTime.ofInstant(instant, ZoneId.of(zone));
+		}
 	  
 	  /**
 	   * @param obj

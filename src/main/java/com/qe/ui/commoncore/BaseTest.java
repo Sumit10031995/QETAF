@@ -27,11 +27,10 @@ import com.qe.commoncore.utils.TestSetupUtils;
 import com.qe.ui.utils.UIUtility;
 
 @Listeners(com.qe.ui.commoncore.TestListener.class)
-public class BaseTest implements BrowserDriver{
+public class BaseTest extends UIUtility implements BrowserDriver{
 	private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
-	protected static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
+	private static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 	private static final String uiConfigProperty = "uiConfig.properties";
-	protected UIUtility uiUtility;
 	
 	// public static CommonConfig config;
 	public static ReportingUtil reporter;
@@ -75,6 +74,8 @@ public class BaseTest implements BrowserDriver{
 			reporter.logTestStepDetails(Status.FAIL,"Invalid browser name");
 			throw new Exception("Invalid browser name");
 		}
+		
+		initUtrility(getDriver());
 		getDriver().manage().window().maximize();
 		//getDriver().manage().deleteAllCookies();
 		getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -82,7 +83,6 @@ public class BaseTest implements BrowserDriver{
 		getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		
     	TestSetupUtils.fetchJiraDetailsAndAddToReport(testResult,testDataRow);
-		this.uiUtility=new UIUtility(getDriver());
     	System.out.println("Starting test:" + testResult.getMethod().getMethodName());	
     	}
 
