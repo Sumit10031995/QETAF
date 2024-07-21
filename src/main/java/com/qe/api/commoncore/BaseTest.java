@@ -22,7 +22,7 @@ public class BaseTest {
  // public static CommonConfig config;
 	public static ReportingUtil reporter;
 	public static AssertionUtils assertion;
-	protected static Configurator configurator = Configurator.getInstance();
+	public static Configurator configurator = Configurator.getInstance();
 
 
 	@BeforeSuite(alwaysRun = true)

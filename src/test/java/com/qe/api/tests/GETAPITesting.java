@@ -8,7 +8,7 @@ import com.qe.api.commoncore.BaseTest;
 import com.qe.api.helper.GetRequestHelper;
 import com.qe.apicore.impl.APIResponse;
 import com.qe.commoncore.annotations.Jira;
-import com.qe.commoncore.constants.ContextConstant;
+import com.qe.commoncore.utils.JavaUtils;
 import com.qe.commoncore.utils.TestDataUtil;
 
 import io.restassured.RestAssured;
@@ -21,22 +21,8 @@ public class GETAPITesting extends BaseTest{
 
 	@DataProvider(name = "test")
 	public Object[][] fff() throws Exception {
-		String dataProviderLimit = configurator.getParameter(ContextConstant.DATA_PROVIDER_LIMIT);
-		Object[][] obj = TestDataUtil.readDataFromCSV_File("src/test/resources/testData.csv", "scenario",
-				Arrays.asList("scenario1", "scenario3"));
-		
-		int limit = (dataProviderLimit.toLowerCase().equals("max")) ? obj.length - 1
-				: (Integer.parseInt(dataProviderLimit) > obj.length - 1 || Integer.parseInt(dataProviderLimit)<=0) ? obj.length - 1
-						: Integer.parseInt(dataProviderLimit);
-
-		Object[][] copiedArray = new Object[limit][obj[0].length];
-
-		for (int i = 1; i <= limit; i++) {
-			for (int j = 0; j < obj[i].length; j++) {
-				copiedArray[i - 1][j] = obj[i][j];
-			}
-		}
-		return copiedArray;
+		Object[][] obj = TestDataUtil.readDataFromCSV_File("src/test/resources/testData.csv", "scenario",Arrays.asList("scenario1", "scenario3"));
+		return JavaUtils.copyArray(obj);
 	}
 	  
 	  

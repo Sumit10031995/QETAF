@@ -4,8 +4,12 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
+
+import com.qe.api.commoncore.BaseTest;
+import com.qe.commoncore.constants.ContextConstant;
 
 
 public class JavaUtils {
@@ -70,6 +74,28 @@ public class JavaUtils {
 	  		return "<a href = 'https://jira.qe.com/browse/"+jiraKey+"'>"+jiraKey+"</a>";	
 	  	}
 	
+	  }
+	  
+	  /**
+	   * @param obj
+	   * @return
+	   * This method is used to copy a user-defined number of elements into a new two-dimensional array
+	   */
+	  public static Object[][] copyArray(Object[][] obj){  
+		  String dataProviderLimit = BaseTest.configurator.getParameter(ContextConstant.DATA_PROVIDER_LIMIT);
+		  
+			int limit = (dataProviderLimit.toLowerCase().equals("max")) ? obj.length - 1
+					: (Integer.parseInt(dataProviderLimit) > obj.length - 1 || Integer.parseInt(dataProviderLimit)<=0) ? obj.length - 1
+							: Integer.parseInt(dataProviderLimit);
+
+			Object[][] copiedArray = new Object[limit][obj[0].length];
+
+			for (int i = 1; i <= limit; i++) {
+				for (int j = 0; j < obj[i].length; j++) {
+					copiedArray[i - 1][j] = obj[i][j];
+				}
+			}
+			return copiedArray;
 	  }
 
 }
