@@ -173,7 +173,7 @@ public class EmailUtil {
 
 	}
 	
-	public String readMail() throws Exception {
+	public String readMail(String subject) throws Exception {
 		String emailMessage = "";
 		EmailConfig config=EmailConfig.getInstance();
 		try {
@@ -189,7 +189,6 @@ public class EmailUtil {
 				message.setFlag(Flag.SEEN, true);
 				emailMessage = message.getContent().toString();
 			}
-			System.out.println(emailMessage);
 			return emailMessage;
 		} catch (Exception e) {
 			throw new Exception("Unable to read email");
