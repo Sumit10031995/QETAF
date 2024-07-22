@@ -28,8 +28,8 @@ public class GETAPITesting extends BaseTest{
 	  
 	  
 	//url=https://jsonplaceholder.typicode.com/posts
-	@Jira(jiraTestKey = "TEST-123")
-	@Test(groups = {"GET","API"}, dataProvider ="test" )
+	@Jira(jiraTestKey = "KAN-1")
+	@Test(groups = {"GET","API","APIJIRAUPDATE"}, dataProvider ="test" )
 	public void getAPITesting(String one,String two,String three,String four,String five) throws Exception {
 	 reporter.createTestStep("Do GET API call and verify HTTP response code");
      APIResponse apiResponse = getRequestHelper.doGetRequest();

@@ -1,0 +1,16 @@
+{
+  "fields": {
+    "project": {
+      "id": "10000",
+      "projectKey": "RECRUIT"
+    },
+    "components" : [
+      {
+        "name":"component 1"
+      },
+      {
+        "name":"component 2"
+      }
+    ]
+  }
+}

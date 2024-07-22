@@ -53,6 +53,14 @@ public class ContextConstant {
 	
 	//DATA_PROVIDER_LIMIT
 	public static final String DATA_PROVIDER_LIMIT = "DATA_PROVIDER_LIMIT";
+	
+	// XRAY Integration
+	public static final String JIRA_TESTEXECUTION_KEY = "JIRA_TestExecution_Key";
+	public static final String JIRA_TESTPLAN_KEY = "JIRA_TestPlan_Key";
+	public static final String JIRA_USERNAME = "JIRA_UserName";
+	
+	public static final String PUBLISH_RESULTS_TO_XRAY = "Publish_Results_To_XRAY";
+
 
 
 }

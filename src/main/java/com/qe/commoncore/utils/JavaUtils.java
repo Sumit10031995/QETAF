@@ -73,7 +73,7 @@ public class JavaUtils {
 	  	if(jiraKey.isEmpty() || jiraKey == null) {
 	  		return null;
 	  	}else {
-	  		return "<a href = 'https://jira.qe.com/browse/"+jiraKey+"'>"+jiraKey+"</a>";	
+	  		return "<a href = 'https://naiksumit7.atlassian.net/browse/"+jiraKey+"'>"+jiraKey+"</a>";	
 	  	}
 	
 	  }
