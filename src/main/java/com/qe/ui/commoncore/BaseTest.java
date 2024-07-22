@@ -20,10 +20,9 @@ import com.aventstack.extentreports.Status;
 import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
+import com.qe.commoncore.utils.EmailUtil;
 import com.qe.commoncore.utils.FileUtil;
 import com.qe.commoncore.utils.ReportingUtil;
-import com.qe.commoncore.utils.SendEmailUtil;
-import com.qe.commoncore.utils.TestDataUtil;
 import com.qe.commoncore.utils.TestSetupUtils;
 import com.qe.ui.utils.UIUtility;
 
@@ -32,7 +31,7 @@ public class BaseTest extends UIUtility implements BrowserDriver{
 	private static final Logger logger = Logger.getLogger(BaseTest.class.getName());
 	private static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 	private static final String uiConfigProperty = "uiConfig.properties";
-    private static final SendEmailUtil email=new SendEmailUtil();
+    private static final EmailUtil email=new EmailUtil();
 
 	// public static CommonConfig config;
 	public static ReportingUtil reporter;

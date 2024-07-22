@@ -12,9 +12,8 @@ import org.testng.annotations.Listeners;
 
 import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
+import com.qe.commoncore.utils.EmailUtil;
 import com.qe.commoncore.utils.ReportingUtil;
-import com.qe.commoncore.utils.SendEmailUtil;
-import com.qe.commoncore.utils.TestDataUtil;
 import com.qe.commoncore.utils.TestSetupUtils;
 
 @Listeners({ com.qe.api.commoncore.TestListener.class })
@@ -24,7 +23,7 @@ public class BaseTest {
 	public static ReportingUtil reporter;
 	public static AssertionUtils assertion;
 	public static Configurator configurator = Configurator.getInstance();
-    private static final SendEmailUtil email=new SendEmailUtil();
+    private static final EmailUtil email=new EmailUtil();
 
 	@BeforeSuite(alwaysRun = true)
 	public void beforeSuite(ITestContext context) throws Throwable {

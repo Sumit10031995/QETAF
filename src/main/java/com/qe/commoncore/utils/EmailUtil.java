@@ -5,28 +5,41 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.mail.*;
+import javax.mail.Flags.Flag;
+import javax.mail.search.SubjectTerm;
+import javax.mail.search.FlagTerm;
+import java.util.Properties;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
-import org.apache.commons.mail.DefaultAuthenticator;
-import org.apache.commons.mail.HtmlEmail;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.qe.api.commoncore.BaseTest;
 import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.config.EmailConfig;
 import com.qe.commoncore.constants.ContextConstant;
 
-public class SendEmailUtil {
+public class EmailUtil {
 	private final EmailConfig config;
 	private String content;
 	private final Pattern pattern;
 	private String body = "", totalTestExecutated, passed, failed, skipped,passPercentage;
     private String buildNumber="xx";
-	public SendEmailUtil() {
+    private String subject;
+    
+	public EmailUtil() {
 		this.config = EmailConfig.getInstance();
 		this.content = FileUtil.readFile(getClass().getClassLoader().getResourceAsStream("Report_Template.html"));
 		this.pattern = Pattern.compile("(\\d+) tests passed (\\d+) tests failed, (\\d+) skipped");
@@ -120,36 +133,66 @@ public class SendEmailUtil {
 	 * This method is use to send mail
 	 */
 	public void sendMail() {
+		
+		Session session = EmailConfig.getInstance().getSendMailSession();
 		try {
-			String mailContent = setContents();
-			HtmlEmail mail = new HtmlEmail();
-			mail.setHostName(config.getHost());
-			mail.setSmtpPort(config.getPort());
-			mail.setAuthenticator(new DefaultAuthenticator(config.getFROMDetails(), config.getPassword())); 
-			mail.setSSLOnConnect(true);
-			mail.setFrom(config.getFROMDetails());
-			// Add 'To' recipients
+			MimeMessage message = new MimeMessage(session);
 			if (Configurator.getInstance().getParameter(ContextConstant.MAIL_TO) == null) {
 				for (String to : config.getTODetails())
-					mail.addTo(to);
+					message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			} else {
 				for (String to : Arrays
 						.asList(Configurator.getInstance().getParameter(ContextConstant.MAIL_TO).split(",")))
-					mail.addTo(to);
+					message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			}
-			if(FileUtil.isFileSizeValid(BaseTest.reporter.reportPath, (15 * 1024 * 1024))) {
-			mail.attach(new File(BaseTest.reporter.reportPath));
-			}else {
+			
+			if (FileUtil.isFileSizeValid(BaseTest.reporter.reportPath, (15 * 1024 * 1024))) {
+				Multipart multipart = new MimeMultipart();
+				MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+				attachmentBodyPart.attachFile(new File(BaseTest.reporter.reportPath));
+				multipart.addBodyPart(attachmentBodyPart);
+				message.setContent(multipart);
+			} else {
 				System.out.println("FileSize exceeds 15 MB, It will not be attached in test results email.");
 			}
-			String automationStatus=(Jsoup.parse(content).getElementById("executionStatus").toString().contains("PASS"))?"PASS":"FAIL";
-			mail.setSubject(((System.getenv("tagName")!=null)?System.getenv("tagName"):"TestRepository") + " test execution report (Build no:"+buildNumber+"::"+automationStatus+")");
-			mail.setHtmlMsg(mailContent);
-			mail.send();
+			
+			String automationStatus = (Jsoup.parse(content).getElementById("executionStatus").toString().contains("PASS")) ? "PASS" : "FAIL";
+			message.setSubject(
+					(subject = ((System.getenv("tagName") != null) ? System.getenv("tagName") : "TestRepository")
+							+ " test execution report (Build no:" + buildNumber + "::" + automationStatus + ")"));
+			
+			message.setText(setContents());
+			
+			// send message
+			Transport.send(message);
 			System.out.println("<<============Email Sent=============>>");
 		} catch (Exception e) {
 			System.out.println("Error sending email: " + e.getMessage());
 			e.printStackTrace();
+		}
+
+	}
+	
+	public String readMail() throws Exception {
+		String emailMessage = "";
+		EmailConfig config=EmailConfig.getInstance();
+		try {
+			Session session = EmailConfig.getInstance().getReadMailSession();
+			Store store = session.getStore("imaps");
+			store.connect(config.getReadMailHost(), config.getFROMDetails(), config.getPassword());
+			Folder inbox = store.getFolder("Inbox");
+			inbox.open(Folder.READ_WRITE);
+
+			Message[] messages = inbox.search(new SubjectTerm(subject));
+			if (messages.length > 0) {
+				Message message = messages[0];
+				message.setFlag(Flag.SEEN, true);
+				emailMessage = message.getContent().toString();
+			}
+			System.out.println(emailMessage);
+			return emailMessage;
+		} catch (Exception e) {
+			throw new Exception("Unable to read email");
 		}
 	}
 }
