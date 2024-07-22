@@ -13,6 +13,7 @@ import org.testng.annotations.Listeners;
 import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
 import com.qe.commoncore.utils.ReportingUtil;
+import com.qe.commoncore.utils.SendEmailUtil;
 import com.qe.commoncore.utils.TestDataUtil;
 import com.qe.commoncore.utils.TestSetupUtils;
 
@@ -23,7 +24,7 @@ public class BaseTest {
 	public static ReportingUtil reporter;
 	public static AssertionUtils assertion;
 	public static Configurator configurator = Configurator.getInstance();
-
+    private static final SendEmailUtil email=new SendEmailUtil();
 
 	@BeforeSuite(alwaysRun = true)
 	public void beforeSuite(ITestContext context) throws Throwable {
@@ -79,8 +80,8 @@ public class BaseTest {
 	public void afterSuite(ITestContext context) {
         reporter.extent.flush();
         //send mail
-        //if(Boolean.parseBoolean(configurator.getParameter(ContextConstant.TRIGGER_MAIL)))
-        //new EmailUtil().sendMail();
+        if(Boolean.parseBoolean(configurator.getParameter(ContextConstant.TRIGGER_MAIL)))
+        email.sendMail();
 	}
 
 }

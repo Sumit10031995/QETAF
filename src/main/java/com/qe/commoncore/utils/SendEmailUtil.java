@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.HtmlEmail;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,14 +20,13 @@ import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.config.EmailConfig;
 import com.qe.commoncore.constants.ContextConstant;
 
-public class EmailUtil {
-	private static final Logger log = LoggerFactory.getLogger(EmailUtil.class);
+public class SendEmailUtil {
 	private final EmailConfig config;
 	private String content;
 	private final Pattern pattern;
 	private String body = "", totalTestExecutated, passed, failed, skipped,passPercentage;
     private String buildNumber="xx";
-	public EmailUtil() {
+	public SendEmailUtil() {
 		this.config = EmailConfig.getInstance();
 		this.content = FileUtil.readFile(getClass().getClassLoader().getResourceAsStream("Report_Template.html"));
 		this.pattern = Pattern.compile("(\\d+) tests passed (\\d+) tests failed, (\\d+) skipped");
@@ -125,6 +125,8 @@ public class EmailUtil {
 			HtmlEmail mail = new HtmlEmail();
 			mail.setHostName(config.getHost());
 			mail.setSmtpPort(config.getPort());
+			mail.setAuthenticator(new DefaultAuthenticator(config.getFROMDetails(), config.getPassword())); 
+			mail.setSSLOnConnect(true);
 			mail.setFrom(config.getFROMDetails());
 			// Add 'To' recipients
 			if (Configurator.getInstance().getParameter(ContextConstant.MAIL_TO) == null) {
@@ -144,9 +146,9 @@ public class EmailUtil {
 			mail.setSubject(((System.getenv("tagName")!=null)?System.getenv("tagName"):"TestRepository") + " test execution report (Build no:"+buildNumber+"::"+automationStatus+")");
 			mail.setHtmlMsg(mailContent);
 			mail.send();
-			log.info("<<============Email Sent=============>>");
+			System.out.println("<<============Email Sent=============>>");
 		} catch (Exception e) {
-			log.error("Error sending email: " + e.getMessage());
+			System.out.println("Error sending email: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}

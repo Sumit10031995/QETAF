@@ -4,7 +4,7 @@ import org.openqa.selenium.WebDriver;
 
 
 public class UIUtility {
-	public WebDriver driver;
+	private WebDriver driver;
 	public XpathUtils xpath;
 	public KeyboardActions keyboardAction;
 	public MouseActions mouseActions;

@@ -9,4 +9,5 @@ public class EmailIntegration {
 	public static final String EMAIL_PORT="qe.automation.email.port";
 	public static final String EMAIL_FROM="qe.automation.email.from";
 	public static final String EMAIL_TO="qe.automation.email.to";
+	public static final String PASSWORD="qe.automation.email.apppasswords";
 }

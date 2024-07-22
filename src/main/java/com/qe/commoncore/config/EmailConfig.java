@@ -59,4 +59,8 @@ public class EmailConfig {
 	public List<String> getTODetails() {
 		return Arrays.asList(properties.getProperty(EmailIntegration.EMAIL_TO).split(","));
 	}
+	
+	public String getPassword() {
+		return properties.getProperty(EmailIntegration.PASSWORD);
+	}
 }
