@@ -1,13 +1,9 @@
 package com.qe.commoncore.utils;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 import org.testng.ITestResult;
-import org.testng.Reporter;
 
-import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.annotations.Jira;
 import com.qe.retry.Retry;
 import com.qe.retry.RetryListener;

@@ -5,11 +5,8 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.mail.*;
+
 import javax.mail.Flags.Flag;
-import javax.mail.search.SubjectTerm;
-import javax.mail.search.FlagTerm;
-import java.util.Properties;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -20,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.search.SubjectTerm;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,7 +25,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.qe.api.commoncore.BaseTest;
-import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.config.EmailConfig;
 import com.qe.commoncore.constants.ContextConstant;
 

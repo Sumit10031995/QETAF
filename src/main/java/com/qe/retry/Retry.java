@@ -1,15 +1,10 @@
 package com.qe.retry;
 
-import java.time.Duration;
-import java.util.NoSuchElementException;
-
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
-import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.constants.ContextConstant;
-
-import net.jodah.failsafe.RetryPolicy;
+import com.qe.commoncore.utils.Configurator;
 
 public class Retry implements IRetryAnalyzer {
 	private int minRetryCount = 0;

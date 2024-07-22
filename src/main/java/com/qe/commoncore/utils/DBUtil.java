@@ -2,7 +2,6 @@ package com.qe.commoncore.utils;
 
 import com.aventstack.extentreports.Status;
 import com.qe.api.commoncore.BaseTest;
-import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.constants.ContextConstant;
 
 import java.sql.Connection;

@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aventstack.extentreports.Status;
-import com.qe.api.commoncore.Configurator;
 import com.qe.api.enums.HttpRestMethod;
 import com.qe.api.enums.RestContentType;
 import com.qe.commoncore.constants.ContextConstant;
+import com.qe.commoncore.utils.Configurator;
 import com.qe.commoncore.utils.FileUtil;
 import com.qe.commoncore.utils.JavaUtils;
 import com.qe.commoncore.utils.JsonUtil;

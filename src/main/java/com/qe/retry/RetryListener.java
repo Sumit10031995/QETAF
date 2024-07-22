@@ -5,9 +5,8 @@ import java.lang.reflect.Method;
 
 import org.testng.IAnnotationTransformer;
 import org.testng.annotations.ITestAnnotation;
-
-import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.constants.ContextConstant;
+import com.qe.commoncore.utils.Configurator;
 import com.qe.commoncore.utils.ReportingUtil;
 
 public class RetryListener implements IAnnotationTransformer {

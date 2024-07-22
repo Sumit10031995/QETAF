@@ -12,6 +12,7 @@ import org.testng.annotations.Listeners;
 
 import com.qe.commoncore.constants.ContextConstant;
 import com.qe.commoncore.utils.AssertionUtils;
+import com.qe.commoncore.utils.Configurator;
 import com.qe.commoncore.utils.EmailUtil;
 import com.qe.commoncore.utils.ReportingUtil;
 import com.qe.commoncore.utils.TestSetupUtils;

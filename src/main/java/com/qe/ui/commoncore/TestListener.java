@@ -9,8 +9,8 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 import com.aventstack.extentreports.Status;
-import com.qe.api.commoncore.Configurator;
 import com.qe.commoncore.constants.ContextConstant;
+import com.qe.commoncore.utils.Configurator;
 
 public class TestListener implements ITestListener {
 
