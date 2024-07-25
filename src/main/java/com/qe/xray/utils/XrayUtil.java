@@ -85,7 +85,7 @@ public class XrayUtil {
 		try {
 			RequestSpecification request = getRestSpecification();
 			request.baseUri(xrayConfig.getXRAYBaseURL());
-			request.log().all().body(getRequestBodyForCreateXrayTestIssue(testResult));
+			request.log().all().body(getRequestBodyToCreateXrayTestIssue(testResult));
 			response = request.post(xrayConfig.getCreateIssueURL());
 
 			String tesKey = null;
@@ -138,7 +138,7 @@ public class XrayUtil {
 			if(!isExtnKeyexist) {
 			RequestSpecification request = getRestSpecification();
 			request.baseUri(xrayConfig.getXRAYBaseURL());
-			request.log().all().body(getRequestBodyForCreateXrayExecutationIssue(testCases.peek()));
+			request.log().all().body(getRequestBodyToCreateXrayExecutationIssue(testCases.peek()));
 			response = request.post(xrayConfig.getCreateIssueURL());
 			
 			if (Objects.nonNull(response) && response.getStatusCode() == 201) {
@@ -160,7 +160,7 @@ public class XrayUtil {
 	}
 	
 
-	private String getRequestBodyForCreateXrayExecutationIssue(TestCaseStatus testCase) {
+	private String getRequestBodyToCreateXrayExecutationIssue(TestCaseStatus testCase) {
 		Gson gson=new Gson();
 		try {
 				fields.setSummary(testCase.getXmlSuiteName() + "::"+ JavaUtils.getDateTime("yyyy-MM-dd HH:mm:ss.SSS"));
@@ -176,7 +176,7 @@ public class XrayUtil {
 		}
 	}
 	
-	private String getRequestBodyForCreateXrayTestIssue(TestCaseStatus testCase) {
+	private String getRequestBodyToCreateXrayTestIssue(TestCaseStatus testCase) {
 		Gson gson=new Gson();
 		try {
 			fields.setSummary(testCase.getMethodDescription());
