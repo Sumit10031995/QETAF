@@ -36,29 +36,23 @@ public class XrayConfig {
     public String getXRAYBaseURL() {
         return properties.getProperty(XrayIntegration.XRAY_BASE_URL);
     }
-
-    public String getXRAYUpdatePathURI() {
-        return properties.getProperty(XrayIntegration.XRAY_TEST_PLAN_IMPORT_URL);
-    }
-
+    
     public String getTestExecutionUpdateURI(){ return properties.getProperty(XrayIntegration.XRAY_TEST_EXECUTION_IMPORT_URL); }
 
-    public String getXrayGetURI(String testPlan) {
-        return MessageFormat.format(properties.getProperty(XrayIntegration.XRAY_TEST_PLAN_GET_URL), testPlan);
-    }
-
-    public String getXRAYUpdatePathURL() {
-        return properties.getProperty(XrayIntegration.XRAY_BASE_URL) + properties.getProperty(XrayIntegration.XRAY_TEST_PLAN_IMPORT_URL);
-    }
-
-    public String getXRAYGetURl(String testPlan) {
-        return properties.getProperty(XrayIntegration.XRAY_BASE_URL) + MessageFormat.format(properties.getProperty(XrayIntegration.XRAY_TEST_PLAN_GET_URL), testPlan);
-    }
     public String getJiraID() {
         return properties.getProperty(XrayIntegration.JIRA_ID);
     }
     public String getJiraProjectKey() {
         return properties.getProperty(XrayIntegration.JIRA_PROJECT_KEY);
+    }
+    public String getCreateIssueURL() {
+        return properties.getProperty(XrayIntegration.XRAY_CREATE_ISSUE_URL);
+    }
+    public String getUpdateStatusURL() {
+        return properties.getProperty(XrayIntegration.XRAY_UPDATE_STATUS_URL);
+    }
+    public String getExeKeyCheckURL() {
+        return properties.getProperty(XrayIntegration.XRAY_EXE_KEY_CHECK_URL);
     }
 
 }

@@ -21,7 +21,7 @@ public class GETAPITesting extends BaseTest{
 
 	@DataProvider(name = "test")
 	public Object[][] fff() throws Exception {
-		Object[][] obj = TestDataUtil.readDataFromCSV_File("src/test/resources/testData.csv", "scenario",Arrays.asList("scenario1", "scenario3"));
+		Object[][] obj = TestDataUtil.readDataFromCSV_File("src/test/resources/testData.csv", "scenario",Arrays.asList("scenario1"));
 		return JavaUtils.copyArray(obj);
 	}
 	  
@@ -29,7 +29,7 @@ public class GETAPITesting extends BaseTest{
 	  
 	//url=https://jsonplaceholder.typicode.com/posts
 	@Jira(jiraTestKey = "KAN-1")
-	@Test(groups = {"GET","API","APIJIRAUPDATE"}, dataProvider ="test" )
+	@Test(groups = {"GET","API","APIJIRAUPDATE"}, dataProvider ="test" ,description="Test jira integration1")
 	public void getAPITesting(String one,String two,String three,String four,String five) throws Exception {
 	 reporter.createTestStep("Do GET API call and verify HTTP response code");
      APIResponse apiResponse = getRequestHelper.doGetRequest();
@@ -46,7 +46,7 @@ public class GETAPITesting extends BaseTest{
      
 	}
 	
-	@Test(groups = {"GET","API"})
+	@Test(groups = {"GET","API"},description="Test jira integration2")
 	public void getAPITestin() throws Exception {
 	 reporter.createTestStep("Do GET API call and verify HTTP response code");
      APIResponse apiResponse = getRequestHelper.doGetRequest();

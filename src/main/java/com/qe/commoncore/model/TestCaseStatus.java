@@ -13,30 +13,15 @@ public class TestCaseStatus {
     private String testKey;
 
     private TestStatus status;
+    
+    private String testMethod;
+    
+    private String methodDescription;
 
     private String comment;
+    
+    private String xmlSuiteName;
 
-	public String getTestKey() {
-		return testKey;
-	}
 
-	public void setTestKey(String testKey) {
-		this.testKey = testKey;
-	}
-
-	public TestStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(TestStatus status) {
-		this.status = status;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+	
 }

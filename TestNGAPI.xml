@@ -9,10 +9,12 @@
 	<parameter name="TRIGGER_MAIL" value="false" />
 	<parameter name="DEEP_REPORTING" value="true" />
 	<parameter name="DATA_PROVIDER_LIMIT" value="MAX" />
-
+    <parameter name="Publish_Results_To_XRAY" value="false"/>
+    <parameter name="JIRA_TestExecution_Key" value="KAN-100"/>
 
 	<listeners>
 		<listener class-name="com.qe.retry.RetryListener" />
+		<listener class-name="com.qe.xray.utils.TestAnnotationListener"></listener>
 	</listeners>
 
 	<test name="Tests">

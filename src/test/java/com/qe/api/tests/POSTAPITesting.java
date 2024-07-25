@@ -12,7 +12,7 @@ public class POSTAPITesting extends BaseTest{
 	
 	// https://jsonplaceholder.typicode.com/posts
 	@Jira(jiraTestKey = "TEST-123")
-	@Test(groups = {"GET","API"})
+	@Test(groups = {"GET","API"},description="Test jira integration post 1")
 	public void doPostRequest() throws Exception {
         String testDataID="1";
 
