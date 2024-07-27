@@ -9,47 +9,65 @@
             font-family: Arial, sans-serif;
             margin: 20px;
             padding: 0;
+            background-color: #f4f4f4;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
         }
         p {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
         }
         .header p {
             margin: 0;
         }
-        .table-container {
+        .table-container, .failed-tests {
             margin-top: 20px;
         }
         .TableStyle {
-            background-color: white;
+            background-color: #ffffff;
             border-collapse: collapse;
-            border: 2px solid grey;
+            border: 1px solid #ddd;
             font-size: 14px;
             width: 100%;
-            table-layout: auto; /* Adjust table layout */
         }
-        .TableStyle th {
+        .TableStyle th, .TableStyle td {
             padding: 10px;
-            border: 2px solid grey;
+            border: 1px solid #ddd;
             text-align: left;
         }
-        .TableStyle td,
         .TableStyle th {
-            padding: 5px;
-            border: px solid grey;
-            text-align: left;
+            background-color: #f4f4f4;
         }
         .TableStyle td {
-            border-bottom: 2px solid grey;
+            background-color: #ffffff;
         }
         .links {
             margin-top: 20px;
+            text-align: center; /* Center align the buttons */
         }
         .links a {
-            margin-right: 10px;
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 20px;
+            color: #ffffff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .links a:hover {
+            background-color: #0056b3;
         }
         /* Header color styles */
         .total-executed {
@@ -57,36 +75,69 @@
             color: white;
         }
         .passed {
-            background-color: #056608; /* green */
+            background-color: #28a745; /* green */
             color: white;
         }
         .failed {
-            background-color: #ff0000; /* red */
+            background-color: #dc3545; /* red */
             color: white;
         }
         .skipped {
-            background-color: #ffff00; /* yellow */
+            background-color: #ffc107; /* yellow */
             color: black;
         }
         .passPercentage {
-            background-color: #FFA500; /* orange */
+            background-color: #fd7e14; /* orange */
             color: black;
         }
         .failed-tests th,
         .build-details th {
-            background-color: #2a2d40; /* dark blue */
+            background-color: #343a40; /* dark gray */
             color: white;
+        }
+        /* Ensure table headings in the middle table have correct colors */
+        .table-container th.total-executed {
+            background-color: #808080; /* gray */
+            color: white;
+        }
+        .table-container th.passed {
+            background-color: #28a745; /* green */
+            color: white;
+        }
+        .table-container th.failed {
+            background-color: #dc3545; /* red */
+            color: white;
+        }
+        .table-container th.skipped {
+            background-color: #ffc107; /* yellow */
+            color: black;
+        }
+        .build-details a {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 10px 20px;
+            color: #ffffff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+        }
+        .build-details a:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>Automation Test Report</h1>
         <div class="header">
-           <br> <p>Hi Team,</p></br>
-           <br> <p id="Service">Automation test script run for suite <strong>TestSuite</strong> is completed.</p> </br>
+            <p>Hi Team,</p>
+            <p id="Service">The automation test suite <strong>TestSuite</strong> has completed.</p>
+        </div>
 
- <div class="build-details">
-            <table class="TableStyle" border="2">
+        <div class="build-details">
+            <table class="TableStyle">
                 <tr>
                     <th>Key</th>
                     <th>Value</th>
@@ -95,7 +146,7 @@
                     <td>Test Suite</td>
                     <td>TestSuite</td>
                 </tr>
-                 <tr>
+                <tr>
                     <td>Overall Execution Status</td>
                     <td id="executionStatus">ExecutionStatus</td>
                 </tr>
@@ -103,36 +154,26 @@
                     <td>Pass Percentage</td>
                     <td>xPassPercentage</td>
                 </tr>
-                 <tr>
-                    <td>Extent Report Link</td>
-                    <td><a href="ExtentReportLink">click to open Extent Report	</a></td>
-                </tr>
                 <tr>
                     <td>Environment Name</td>
                     <td>EnvironmentName</td>
                 </tr>
-                <tr>
-                    <td>Test Repository</td>
-                    <td><a href="TestRepository">TestRepository(Branch:BranchName)</a></td>
-                </tr>
-                <tr>
-                    <td>Looper Build Link</td>
-                    <td><a href="LooperBuildURLLink">LooperBuildURLLink</a></td>
-                </tr>
-                <tr>
-                    <td>Testbrust Link</td>
-                    <td><a href="TestbrustLink">TestbrustLink</a></td>
-                </tr>
             </table>
+            <!-- Buttons moved here -->
+            <div class="links">
+                <a href="ExtentReportLink">Open Extent Report</a>
+                <a href="TestRepository">View Repository (Branch: BranchName)</a>
+                <a href="LooperBuildURLLink">View Looper Build</a>
+            </div>
         </div>
-        </div>
+
         <div class="table-container">
-            <table class="TableStyle" border="2">
+            <table class="TableStyle">
                 <tr>
-                    <th class="total-executed" style="width:25%;">TotalTestExecuted</th>
-                    <th class="passed" style="width:25%;">Passed</th>
-                    <th class="failed" style="width:25%;">Failed</th>
-                    <th class="skipped" style="width:25%;">Skipped</th>
+                    <th class="total-executed">Total Test Executed</th>
+                    <th class="passed">Passed</th>
+                    <th class="failed">Failed</th>
+                    <th class="skipped">Skipped</th>
                 </tr>
                 <tr>
                     <td>xTotalTestExecuted</td>
@@ -145,17 +186,18 @@
        
         <div class="failed-tests">
             <p><strong>Failed Tests:</strong></p>
-            <table class="TableStyle" border="2">
+            <table class="TableStyle">
                 <tr>
-                    <th style="width:6%;">Sl No</th>
-                    <th style="width:21.33%;">Test Name</th>
-                    <th style="width:21.33%;">Test Class</th>
-                    <th style="width:21.33%;">Jira ID</th>
+                    <th>Sl No</th>
+                    <th>Test Name</th>
+                    <th>Test Class</th>
+                    <th>Jira ID</th>
                 </tr>
                 <tbody>
+                <!-- Data rows go here -->
                 </tbody>
             </table>
-            <p>Please refer attached report for more details.</p>
+            <p>Please refer to the attached report for more details.</p>
         </div>
         <p>Thank you,<br>CP QE Team</p>
     </div>
