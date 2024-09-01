@@ -191,4 +191,15 @@ public class EmailUtil {
 			throw new Exception("Unable to read email");
 		}
 	}
+	
+	private String extractElementLink(String htmlContent, String element) {
+		Document doc = Jsoup.parse(htmlContent);
+		Elements links = doc.select("a");
+		Element link = doc.select("a:contains(" + element + ")").first();
+
+		if (link != null) {
+			return link.attr("href");
+		}
+		return null;
+	}
 }
