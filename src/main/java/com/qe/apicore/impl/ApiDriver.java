@@ -7,28 +7,20 @@ import java.util.Map;
 import com.aventstack.extentreports.Status;
 import com.qe.api.enums.HttpRestMethod;
 import com.qe.api.enums.RestContentType;
-import com.qe.commoncore.constants.ContextConstant;
-import com.qe.commoncore.utils.Configurator;
 import com.qe.commoncore.utils.FileUtil;
 import com.qe.commoncore.utils.JavaUtils;
 import com.qe.commoncore.utils.JsonUtil;
 import com.qe.commoncore.utils.ReportingUtil;
 
 import io.restassured.RestAssured;
-import io.restassured.config.HttpClientConfig;
-import io.restassured.config.LogConfig;
-import io.restassured.config.RestAssuredConfig;
-import io.restassured.filter.log.LogDetail;
 import io.restassured.path.json.JsonPath;
-import io.restassured.specification.QueryableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.SpecificationQuerier;
 
 /**
  * This class is a wrapper over rest-assured and having functions to hit an API request.
  */
 public class ApiDriver {
-	
+	private String url;
 	private HttpRestMethod httpRestMethod;
 	private RequestSpecification requestSpecification;
 	private String apiHost;
@@ -43,14 +35,12 @@ public class ApiDriver {
     ReportingUtil reporter = ReportingUtil.getInstance();
 
 	public ApiDriver(String apiHost, String endPoint) {
-		this.setRequestConfig();
 		this.apiHost = apiHost;
 		this.endPoint = endPoint;
 		this.requestContentType = RestContentType.JSON;
 	}
 
 	public ApiDriver(String apiHost, String endPoint, Map<String, Object> headers) {
-		this.setRequestConfig();
 		this.apiHost = apiHost;
 		this.endPoint = endPoint;
 		this.requestHeaders = headers;
@@ -355,69 +345,73 @@ public class ApiDriver {
 	}
 	
 	
-	
 	/**
-	 * This method is required to configure RestAssured Timeout 
-	 */
-	private void setRequestConfig() {
-		
-		//socket timeout config
-		int timeOut = Integer.valueOf(Configurator.getInstance().getParameter(ContextConstant.API_TIMEOUT_MS));
-		HttpClientConfig httpClientConfig = HttpClientConfig.httpClientConfig().setParam("http.socket.timeout", timeOut)
-				.setParam("http.connection.timeout", timeOut);
-		RestAssured.config = RestAssuredConfig.config().httpClient(httpClientConfig);
-	}
-	
-	/**
-	 * 
-	 * @param url
-	 * @param header
-	 * @param queryParam
-	 * @param pathParam
-	 * @param requestBody
 	 * @param apiResponse
 	 * @return String
 	 *    This method is use to encapsulate all API's request/response details within HTML tags for inclusion in Extent Report.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private String getAPIDetails(HttpRestMethod httpMethod,APIResponse apiResponse) throws Exception {
-	
-		System.out.println(this.getCurl());
-		// If Deep Reporting value is true, print request and response details to ExtentReport(Request URL,Request Header,Request Body,Response Header,Response Body). Otherwise, only add request details to the ExtentReport(Request URL,Request Header).
-		boolean isDeepReporting=Boolean.parseBoolean(Configurator.getInstance().getParameter(ContextConstant.DEEP_REPORTING));
+		System.out.println(buildCurlCommand(httpMethod));
 		String apiSpecification = "<pre>"
 				+ "Request Configuration" + "<br>"
 				+ "̄API:"+ httpMethod+ "--"+ this.apiHost+ this.getendPoint()+"<br>"
 				+ JavaUtils.getAsHTML("Headers : ",this.getHeaders().toString())+ "<br>"
 				+ "QueryParameters:"+ this.getQueryParams().toString() +"<br>"
-				+ "PathParameters:"+ this.getPathParams().toString();
-		if(isDeepReporting) {
-			apiSpecification=apiSpecification
-					+JavaUtils.getAsHTML("Request Body : ",JsonUtil.prettyPrint((this.requestBody.toString().contains("<a href="))?this.requestBody.toString().replace("a href=", ""):this.requestBody.toString()))+ "<br>"	
-					+ "</pre><pre>Response Details"+ "<br>"
-					+ JavaUtils.getAsHTML("Response Headers : ",apiResponse.response.headers().toString())+ "<br>"
-					+ JavaUtils.getAsHTML("Response Body : ",apiResponse.PrettyPrint().toString());
-		}
-		apiSpecification=apiSpecification+"</pre>";
+				+ "PathParameters:"+ this.getPathParams().toString()
+				+JavaUtils.getAsHTML("Request Body : ",JsonUtil.prettyPrint((this.requestBody.toString().contains("<a href="))?this.requestBody.toString().replace("a href=", ""):this.requestBody.toString()))+ "<br>"	
+				+ "</pre><pre>Response Details"+ "<br>"
+				+ JavaUtils.getAsHTML("<br> Response Code:"+apiResponse.response.statusCode()+ "<br>"+"Response Headers : ",apiResponse.response.headers().toString())+ "<br>"
+				+ JavaUtils.getAsHTML("Response Body : ",apiResponse.PrettyPrint().toString())+"</pre>";
 		return apiSpecification;
 	}
-	
-	private String getCurl() throws Exception {
-		try {
-			QueryableRequestSpecification requestSpec = SpecificationQuerier.query(requestSpecification);
-			StringBuilder curlCommand = new StringBuilder("curl ");
-			curlCommand.append("'").append(requestSpec.getBaseUri() + this.endPoint).append("' ");
-			curlCommand.append(" -X " + requestSpec.getMethod() + " ");
-			requestSpec.getHeaders().asList().forEach(header -> curlCommand.append("-H '").append(header.getName())
-					.append(": ").append(header.getValue()).append("' "));
-			String requestBody = requestSpec.getBody();
-			if (requestBody != null && !requestBody.isEmpty()) {
-				curlCommand.append("-d '").append(requestBody.replace("'", "\\'")).append("' ");
+
+	public String buildCurlCommand(HttpRestMethod httpMethod) {
+		StringBuilder curlCommand = new StringBuilder("curl -X " + httpMethod);
+
+		// Build the full URL, including path and query parameters
+		StringBuilder fullUrl = new StringBuilder(this.getapiHost());
+
+		// Append the endpoint if provided
+		if (endPoint != null && !endPoint.isEmpty()) {
+			// Replace path parameters in the endpoint, like /users/{id}/{type}
+			for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
+				String placeholder = "{" + entry.getKey() + "}";
+				endPoint = endPoint.replace(placeholder, entry.getValue().toString());
 			}
-			return curlCommand.toString();
-		} catch (Exception e) {
-			throw new Exception("Unable to build CURL command");
+			fullUrl.append(endPoint);
 		}
+		// Append query parameters if any
+		if (!queryParams.isEmpty()) {
+			fullUrl.append("?");
+			queryParams.forEach((key, value) -> fullUrl.append(key).append("=").append(value).append("&"));
+			fullUrl.setLength(fullUrl.length() - 1);
+		}
+		// Add the full URL to the curl command
+		curlCommand.append(" '").append(fullUrl).append("'");
+
+		// Add headers
+		for (Map.Entry<String, Object> header : requestHeaders.entrySet()) {
+			curlCommand.append(" -H '").append(header.getKey()).append(": ").append(header.getValue()).append("'");
+		}
+		curlCommand.append(" -H 'Content-Type: application/json'");
+		// Add body data if any
+		if (requestBody != null) {
+			curlCommand.append(" -d '").append(requestBody.toString()).append("'");
+		}
+		// Add form parameters if any
+		if (!formParams.isEmpty()) {
+			formParams.forEach((key, value) -> {
+				curlCommand.append(" -F '").append(key).append("=").append(value).append("'");
+			});
+		}
+		// Add multipart data if any
+		if (!multiParts.isEmpty()) {
+			multiParts.forEach((key, value) -> {
+				curlCommand.append(" -F '").append(key).append("=@").append(value).append("'");
+			});
+		}
+		return curlCommand.toString();
 	}
   
 }

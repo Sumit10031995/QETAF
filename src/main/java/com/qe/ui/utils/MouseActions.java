@@ -1,5 +1,6 @@
 package com.qe.ui.utils;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -38,4 +39,7 @@ public abstract class MouseActions {
 	public void dragAndDrop(WebElement sourceElement, WebElement targetElement) {
 		actions.dragAndDrop(sourceElement, targetElement).perform();
 	}
+	
+
+
 }

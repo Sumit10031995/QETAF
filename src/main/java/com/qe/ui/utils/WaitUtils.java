@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.aventstack.extentreports.Status;
 import com.qe.commoncore.utils.ReportingUtil;
 
-public abstract class WaitUtils{
+public class WaitUtils{
 	private static final ReportingUtil reporter = ReportingUtil.getInstance();
 	private static final int waitTime = 20;
 	private final WebDriverWait wait;
